@@ -1,0 +1,58 @@
+.second-main{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  margin-left: 70px;  
+}
+
+
+.second-sec{
+  pad: 150px;
+  display: flex;
+  width: 900px;
+  border-radius: 2px;
+  /* box-shadow: 0 0px 20px 0px rgba(0,0,0,0.1); */
+
+}
+.right{
+    position: relative;
+    width: 50%;
+    padding: 15px;
+}
+.right image{
+    width: 90%;
+    height: 90%;
+    object-fit: cover;
+    /* opacity: 0.; */
+    
+}
+.text2{
+    position: absolute;
+    bottom: 200px;
+    left: 80px;
+    color: rgb(43, 34, 34);
+}
+
+.login{
+  width: 50%;
+  padding: 40px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  
+}
+.login input{
+  padding: 10px;
+  margin-bottom: 25px;
+  border-radius: 5px;
+  border: 1px solid #ccc;
+  
+}
+.login button{
+  padding: 10px;
+  color: white;
+  background: #0f3d3e;
+  border: none;
+  border-radius: 6px;
+}

@@ -1,0 +1,42 @@
+.main-adminnavbar{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 16px 24px;
+    background-color: white;
+    border-bottom: 2px solid #ccc;
+}
+
+.right-anb{
+    display: flex;
+    align-content: center;
+    justify-content: space-between;
+    flex-direction: row;
+    align-items: center;
+    gap: 1rem;
+}
+.sec-right-anb{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    align-content: center;
+    flex-direction: row;
+    gap: 1rem;
+}
+.icon2 {
+font-size: 29px
+}
+.icon{
+    font-size: 20px;
+}
+.writings-anb h4{
+    margin: 0px;
+}
+.writings-anb h5{
+    margin: 0px;
+}
+.writings-anb{
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}

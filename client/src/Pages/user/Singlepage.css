@@ -1,0 +1,167 @@
+
+
+    /* margin: 0; */
+    /* padding: 0; */
+    /* box-sizing: border-box; */
+
+.nav-icons-s{
+    display: flex;
+    gap: 30px;
+    /* align-items: end; */
+
+    align-items: center;
+    justify-content: end;
+    margin-left: 382px;
+}
+.nav-icons-s button{
+    font-size: 18px;
+    /* background-color: rgb(5, 5, 136); */
+    /* align-items: end; */
+
+    border: none;
+    background: transparent;
+    font-size: 22px;
+    cursor: pointer;
+}
+.logo-s{
+    display: flex;
+    gap: 23%;
+    /* margin-left: 27px; */
+
+    align-items: center;
+    justify-content: space-between;
+}
+.logo-s h2{
+    font-size: 28px;
+    font-weight: 700;
+}
+.navbar-s{
+    /* justify-content: end; */
+    display: flex;
+    width: 100%;
+    /* border-bottom: 1px solid; */
+    padding: 20px 50px;
+}
+
+.sec1-s{
+    display: flex;
+    padding: 30px;
+    padding-top: 50px;
+    /* width: 100% */
+}
+.single1{
+    width: 450px;
+}
+.single1 img{
+    width: 80%;
+}
+.mainsec-s{
+    display: flex;
+    gap: 70px;
+    padding: 40px 60px;
+    
+}
+.threetogether{
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+
+}
+.threetogether img{
+    width: 115px;
+    border: 1px solid;
+    border-radius: 8px;
+    padding: 16px;
+    cursor: pointer;
+}
+.writings h3{
+    font-size: 22px;
+    /* line-height: 42px; */
+    /* margin-bottom: 12px; */
+}
+.writings h5{
+    font-size: 30px;
+    margin-top: 18px;
+    margin-bottom: 18px;
+}
+.writings button{
+    width: 130px;
+    height: 45px;
+    border: 2px solid black;
+    margin-bottom: 25px;
+    cursor: pointer;
+    font-size: 20px;
+    padding: 4px;
+}
+.writings h6{
+    font-size: 22px;
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
+.writings p{
+    font-size: 17px;
+    line-height: 28px;
+}
+
+.left-side-s{
+    display: flex;
+    flex-direction: column;
+}
+.btns-s{
+    flex-direction: column;
+    display: flex;
+    gap: 18px;
+    padding-left: 110px;
+    margin-top: 25px;
+}
+.buy-btn{
+    width: 420px;
+    height: 50px;
+    background: #0d1b3d;
+    color: white;
+    border: none;
+    font-size: 18px;
+    border-radius: 6px;
+    cursor: pointer;
+}
+.cart-btn{
+    width: 420px;
+    height: 50px;
+    background:white;
+    color: black;
+    border: 2px solid #0d1b3d;
+    font-size: 18px;
+    border-radius: 6px;
+    cursor: pointer;
+}
+
+.perfumes-s{
+    padding: 40px;
+    display: flex;
+    padding-top: 30px;
+}
+.perfumes-s img{
+    width: 65%;
+    margin-left: 40px;
+    
+}
+.perfumes-s button{
+    width: 65%;
+    margin-left: 40px;
+    background-color: rgb(10, 17, 146);
+}
+.sforu{
+    margin-left: 70px;
+}
+.end-s{
+    display: flex;
+    gap: 200px;
+    padding: 40px;
+    background-color: rgb(201, 252, 252);
+    /* margin-left: 30px; */
+    margin-top: 30px;
+}
+.old-price{
+    text-decoration: line-through;
+    color: gray;
+}

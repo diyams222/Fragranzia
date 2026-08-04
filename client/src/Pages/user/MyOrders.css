@@ -1,0 +1,140 @@
+.orders-page {
+  max-width: 1100px;
+  margin: 40px auto;
+  padding: 20px;
+}
+
+.orders-page h1 {
+  font-size: 40px;
+  margin-bottom: 10px;
+}
+
+.breadcrumb {
+  color: #777;
+  margin-bottom: 25px;
+}
+
+.profile-tabs {
+  display: flex;
+  gap: 15px;
+  margin-bottom: 30px;
+}
+
+.profile-tabs button {
+  padding: 10px 30px;
+  border: 1px solid #ddd;
+  background: #fff;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.profile-tabs .active {
+  background: #1f2937;
+  color: white;
+}
+
+/* No orders */
+.no-orders {
+  text-align: center;
+  padding: 60px 20px;
+  color: #777;
+}
+
+.no-orders button {
+  margin-top: 20px;
+  padding: 12px 30px;
+  background: #1f2937;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 15px;
+}
+
+/* Order card */
+.order-card {
+  border: 1px solid #e5e7eb;
+  border-radius: 10px;
+  margin-bottom: 20px;
+  overflow: hidden;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+}
+
+.order-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 14px 20px;
+  background: #f9fafb;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.order-id {
+  font-weight: 700;
+  font-size: 14px;
+  color: #1f2937;
+  margin-right: 14px;
+}
+
+.order-date {
+  font-size: 13px;
+  color: #6b7280;
+}
+
+.order-status {
+  padding: 5px 14px;
+  border-radius: 20px;
+  color: white;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.order-items {
+  padding: 16px 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.order-item-row {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.order-item-img {
+  width: 64px;
+  height: 64px;
+  object-fit: cover;
+  border-radius: 8px;
+  border: 1px solid #e5e7eb;
+}
+
+.order-item-title {
+  font-weight: 600;
+  font-size: 14px;
+  color: #1f2937;
+  margin: 0 0 4px 0;
+}
+
+.order-item-meta {
+  font-size: 13px;
+  color: #6b7280;
+  margin: 0;
+}
+
+.order-card-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 20px;
+  background: #f9fafb;
+  border-top: 1px solid #e5e7eb;
+  font-size: 14px;
+  color: #374151;
+}
+
+.order-total strong {
+  color: #1f2937;
+  font-size: 16px;
+}

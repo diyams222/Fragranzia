@@ -1,0 +1,91 @@
+/* AdminSidebar.css */
+.main-adminsidebar {
+  display: flex;
+  flex-direction: column;
+  width: 190px;
+  min-height: 100vh;
+  background: #fff;
+  border-right: 1px solid #e8e8e8;
+  padding: 0;
+  position: sticky;
+  top: 0;
+}
+
+.dashtar {
+  padding: 24px 20px 16px;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.dashtar h2 {
+  font-size: 20px;
+  font-weight: 800;
+  color: #00b074;
+  letter-spacing: -0.5px;
+}
+
+.heds-asb {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 14px 10px;
+}
+
+.sidebar-link {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  padding: 11px 14px;
+  background: transparent;
+  border: none;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 500;
+  color: #555;
+  cursor: pointer;
+  text-align: left;
+  transition: background 0.18s, color 0.18s;
+}
+
+.sidebar-link:hover {
+  background: #f0faf6;
+  color: #00b074;
+}
+
+.sidebar-active {
+  background: #e8f8f2 !important;
+  color: #00b074 !important;
+  font-weight: 700;
+}
+
+.sidebar-icon {
+  font-size: 15px;
+  display: flex;
+  align-items: center;
+}
+
+.asb-btn {
+  padding: 14px 10px;
+  border-top: 1px solid #f0f0f0;
+}
+
+.logout-sidebar-btn {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  padding: 11px 14px;
+  background: #00b074;
+  border: none;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 600;
+  color: #fff;
+  cursor: pointer;
+  transition: background 0.18s;
+}
+
+.logout-sidebar-btn:hover {
+  background: #009962;
+}

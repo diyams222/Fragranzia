@@ -1,0 +1,181 @@
+/* ── Page wrapper ─────────────────────────────────────────── */
+.ap-page {
+  padding: 24px 28px;
+  background: #f7f8fa;
+  min-height: 100%;
+  position: relative;
+}
+
+/* ── Toast ────────────────────────────────────────────────── */
+.ap-toast {
+  position: fixed;
+  top: 20px;
+  right: 24px;
+  z-index: 2000;
+  padding: 12px 22px;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 500;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.12);
+  animation: ap-slide-in 0.25s ease;
+}
+.ap-toast-success { background: #d1fae5; color: #065f46; border: 1px solid #6ee7b7; }
+.ap-toast-error   { background: #fee2e2; color: #991b1b; border: 1px solid #fca5a5; }
+@keyframes ap-slide-in {
+  from { transform: translateX(60px); opacity: 0; }
+  to   { transform: translateX(0);    opacity: 1; }
+}
+
+/* ── Form card ────────────────────────────────────────────── */
+.ap-form-page {
+  background: #fff;
+  border-radius: 14px;
+  padding: 32px 36px 28px;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.07);
+  display: flex;
+  flex-direction: column;
+  gap: 22px;
+}
+
+/* ── Header ───────────────────────────────────────────────── */
+.ap-form-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+.ap-form-title {
+  font-size: 22px;
+  font-weight: 700;
+  color: #1a1a2e;
+  margin: 0 0 4px 0;
+}
+.ap-form-sub {
+  font-size: 13px;
+  color: #9ca3af;
+  margin: 0;
+}
+
+/* ── Variants toggle ──────────────────────────────────────── */
+.ap-variants-toggle-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-shrink: 0;
+}
+.ap-variants-label {
+  font-size: 13px;
+  font-weight: 500;
+  color: #f97316;
+}
+.ap-switch {
+  position: relative;
+  display: inline-block;
+  width: 46px;
+  height: 26px;
+  flex-shrink: 0;
+}
+.ap-switch input { opacity: 0; width: 0; height: 0; }
+.ap-slider {
+  position: absolute;
+  inset: 0;
+  background: #d1d5db;
+  border-radius: 50px;
+  cursor: pointer;
+  transition: 0.28s;
+}
+.ap-slider::before {
+  content: "";
+  position: absolute;
+  width: 20px; height: 20px;
+  left: 3px; bottom: 3px;
+  background: #fff;
+  border-radius: 50%;
+  transition: 0.28s;
+}
+.ap-switch input:checked + .ap-slider { background: #f97316; }
+.ap-switch input:checked + .ap-slider::before { transform: translateX(20px); }
+
+/* ── Grid rows ────────────────────────────────────────────── */
+.ap-row-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; }
+.ap-row-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+
+/* ── Field ────────────────────────────────────────────────── */
+.ap-field { display: flex; flex-direction: column; gap: 6px; }
+.ap-field label {
+  font-size: 13px;
+  font-weight: 600;
+  color: #374151;
+}
+.ap-field input,
+.ap-field textarea,
+.ap-field select {
+  width: 100%;
+  padding: 10px 13px;
+  border: 1.5px solid #e5e7eb;
+  border-radius: 7px;
+  font-size: 14px;
+  color: #1a1a2e;
+  outline: none;
+  background: #fff;
+  transition: border-color 0.18s;
+}
+.ap-field input:focus,
+.ap-field textarea:focus,
+.ap-field select:focus { border-color: #00b074; }
+.ap-field textarea { resize: vertical; }
+
+/* ── Image upload ─────────────────────────────────────────── */
+.ap-upload-box {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  border: 2px dashed #d1d5db;
+  border-radius: 10px;
+  padding: 40px 24px;
+  cursor: pointer;
+  text-align: center;
+  min-height: 140px;
+  transition: border-color 0.18s, background 0.18s;
+}
+.ap-upload-box:hover { border-color: #00b074; background: #f0faf6; }
+.ap-upload-box p { font-size: 13px; color: #9ca3af; margin: 0; }
+.ap-img-preview {
+  max-height: 160px;
+  max-width: 100%;
+  border-radius: 8px;
+  object-fit: contain;
+}
+
+/* ── Footer ───────────────────────────────────────────────── */
+.ap-form-footer {
+  display: flex;
+  justify-content: flex-end;
+  padding-top: 4px;
+}
+.ap-save-btn {
+  padding: 10px 32px;
+  background: #00b074;
+  color: #fff;
+  border: none;
+  border-radius: 7px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.18s;
+}
+.ap-save-btn:hover    { background: #009962; }
+.ap-save-btn:disabled { opacity: 0.65; cursor: not-allowed; }
+
+/* ── Responsive ───────────────────────────────────────────── */
+@media (max-width: 900px) {
+  .ap-row-4 { grid-template-columns: 1fr 1fr; }
+  .ap-row-3 { grid-template-columns: 1fr 1fr; }
+}
+@media (max-width: 600px) {
+  .ap-row-4, .ap-row-3 { grid-template-columns: 1fr; }
+  .ap-form-page { padding: 20px 16px; }
+}

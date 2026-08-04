@@ -1,0 +1,140 @@
+/* Navbar Container */
+.navbar {
+  width: 100%;
+  height: 80px;
+  background: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-bottom: 1px solid #eee;
+}
+
+/* Main Navbar Content */
+.logo {
+  width: 95%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+/* Brand */
+.logo h2 {
+  font-size: 30px;
+  font-weight: 700;
+  margin: 0;
+}
+
+/* Menu */
+.nav-hedings {
+  display: flex;
+  align-items: center;
+  gap: 35px;
+}
+
+.nav-hedings li {
+  list-style: none;
+}
+
+.nav-hedings a {
+  text-decoration: none;
+  color: black;
+  font-size: 16px;
+  font-weight: 500;
+}
+
+.nav-hedings a:hover {
+  color: #0f3d56;
+}
+
+/* Right Section */
+.nav-right {
+  display: flex;
+  align-items: center;
+}
+
+/* Search Box */
+.search-box {
+  width: 240px;
+  height: 45px;
+  border: 1px solid #ddd;
+  border-radius: 30px;
+  display: flex;
+  align-items: center;
+  padding: 0 15px;
+  gap: 10px;
+}
+
+.search-box input {
+  border: none;
+  outline: none;
+  width: 100%;
+  font-size: 15px;
+}
+
+.search-icon {
+  color: #777;
+}
+
+/* Icons */
+.nav-icons {
+  display: flex;
+  gap: 12px;
+}
+
+.nav-icons button {
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  border: 1px solid #ddd;
+  background: white;
+  cursor: pointer;
+  font-size: 20px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.nav-icons button:hover {
+  background: #f5f5f5;
+}
+
+/* Wishlist button — needs relative for badge */
+.nav-wishlist-btn {
+  position: relative;
+}
+
+/* Red badge on wishlist icon */
+.wishlist-badge {
+  position: absolute;
+  top: -5px;
+  right: -5px;
+  min-width: 18px;
+  height: 18px;
+  padding: 0 4px;
+  background: #e53935;
+  color: #fff;
+  border-radius: 50px;
+  font-size: 10px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+  line-height: 1;
+}
+
+
+/* Discount Banner */
+.nav-h3 {
+  margin: 0;
+  height: 45px;
+  margin-bottom: 10px;
+  background: #0f3d56;
+  color: white;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 15px;
+  letter-spacing: 1px;
+}

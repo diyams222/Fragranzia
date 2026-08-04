@@ -1,0 +1,146 @@
+.nav-icons-allproducts{
+    display: flex;
+    gap: 30px;
+    align-items: end;
+    justify-content: end;
+    margin-left: 382px;
+}
+.nav-icons-allproducts button{
+    font-size: 18px;
+    /* background-color: rgb(5, 5, 136); */
+    /* align-items: end; */
+}
+.logo-allproducts{
+    display: flex;
+    gap: 33%;
+    margin-left: 27px;
+    /* align-items: end; */
+}
+.navbar-allproducts{
+    /* justify-content: end; */
+    display: flex;
+    width: 100%;
+}
+.sect1-all{
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 40px;
+    padding: 40px;
+    max-width: 1200px;
+    margin: auto;
+}
+.product-card-all{
+    width: 280px;
+    position: relative;
+    transition: .3s;
+}
+
+/* ===== Wishlist Heart Button (All Products) ===== */
+.wishlist-heart-btn-all {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    width: 34px;
+    height: 34px;
+    border-radius: 50%;
+    border: none;
+    background: rgba(255, 255, 255, 0.92);
+    box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    z-index: 10;
+    transition: transform 0.2s, box-shadow 0.2s;
+    padding: 0;
+    margin: 0;
+}
+
+.wishlist-heart-btn-all:hover {
+    transform: scale(1.15);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+}
+
+.heart-icon-all {
+    font-size: 16px;
+    color: #aaa;
+    transition: color 0.2s;
+}
+
+.heart-active-all {
+    color: #e53935 !important;
+}
+
+/* Override default button styles inside product card */
+.product-card-all .wishlist-heart-btn-all {
+    width: 34px !important;
+    height: 34px !important;
+    margin: 0 !important;
+    background: rgba(255, 255, 255, 0.92) !important;
+    color: inherit !important;
+}
+
+.product-card-all:hover{
+    transform: translateY(-6px);
+}
+
+.product-card-all h3{
+    font-size: 13px;
+    font-weight: 500;
+    padding: 0 7px;
+    margin-top: 10px;
+    color: #222;
+    min-height: 35px;
+    margin-left: 37px;
+}
+
+.product-card-all img{
+    width: 90%;
+    margin-left: 40px;
+}
+
+.product-card-all button{
+    width: 85%;
+    height: 40px;
+    margin-left: 40px;
+    background-color: rgb(12, 18, 133);
+    color: white;
+}
+
+.product-card-all button:hover{
+    background: #01283c;
+}
+
+.sprice-all{
+    font-size: 15px;
+    font-weight: bold;
+    color: black;
+    padding-top: 10px;
+    margin-left: 37px;
+}
+
+.oprice-all{
+    color: #888;
+    text-decoration: line-through;
+    font-size: 14px;
+    margin-left: 37px;
+}
+.allpr{
+    display: flex;
+    gap: 30px;
+    /* align-items: end; */
+    /* justify-content: end; */
+    margin-left: 38px;
+}
+.allpr2{
+    display: flex;
+    gap: 30px;
+    margin-left: 170px;
+    margin-top: 27px;
+    /* justify-content: end; */
+    /* align-items: end; */
+}
+.hed{
+    font-size: 12px;
+    margin-left: 25px;
+}
