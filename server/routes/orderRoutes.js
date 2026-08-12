@@ -6,6 +6,9 @@ const {
   getAllOrders,
   getOrderById,
   updateOrderStatus,
+  cancelOrder,
+  requestReturn,
+  handleReturn,
 } = require("../controllers/orderController");
 
 // Place new order
@@ -22,5 +25,14 @@ router.get("/:orderId", getOrderById);
 
 // Admin: update order status
 router.put("/:orderId/status", updateOrderStatus);
+
+// User: cancel own order
+router.patch("/:orderId/cancel", cancelOrder);
+
+// User: request return
+router.patch("/:orderId/return", requestReturn);
+
+// Admin: approve or reject return
+router.patch("/:orderId/return/handle", handleReturn);
 
 module.exports = router;

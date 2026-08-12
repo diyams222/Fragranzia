@@ -42,8 +42,32 @@ function AdminOrders() {
       Shipped: "#8b5cf6",
       Delivered: "#10b981",
       Cancelled: "#ef4444",
+      "Return Requested": "#f97316",
+      Returned: "#6366f1",
     };
     return map[status] || "#888";
+  };
+
+  const handleReturn = async (orderId, action) => {
+    try {
+      const adminNote = action === "reject"
+        ? prompt("Optional: Enter a note for the customer (e.g. reason for rejection):")
+        : "";
+      await axios.patch(`http://localhost:5000/api/orders/${orderId}/return/handle`, {
+        action,
+        adminNote: adminNote || "",
+      });
+      const newStatus = action === "approve" ? "Returned" : "Delivered";
+      setOrders((prev) =>
+        prev.map((o) => (o._id === orderId ? { ...o, status: newStatus } : o))
+      );
+      if (selectedOrder?._id === orderId) {
+        setSelectedOrder((prev) => ({ ...prev, status: newStatus }));
+      }
+    } catch (error) {
+      console.error("Failed to handle return:", error);
+      alert("Failed to process return request.");
+    }
   };
 
   return (
@@ -189,7 +213,7 @@ function AdminOrders() {
                     value={selectedOrder.status}
                     onChange={(e) => handleStatusChange(selectedOrder._id, e.target.value)}
                   >
-                    {["Pending", "Processing", "Shipped", "Delivered", "Cancelled"].map((s) => (
+                    {["Pending", "Processing", "Shipped", "Delivered", "Cancelled", "Return Requested", "Returned"].map((s) => (
                       <option key={s} value={s}>{s}</option>
                     ))}
                   </select>
@@ -201,6 +225,32 @@ function AdminOrders() {
                   </span>
                 </div>
               </div>
+
+              {/* Return Request Panel */}
+              {selectedOrder.status === "Return Requested" && (
+                <div className="modal-section">
+                  <h4>Return Request</h4>
+                  {selectedOrder.returnRequest?.reason && (
+                    <p style={{ marginBottom: 14, color: "#374151", fontSize: 14 }}>
+                      <strong>Customer Reason:</strong> {selectedOrder.returnRequest.reason}
+                    </p>
+                  )}
+                  <div style={{ display: "flex", gap: 12 }}>
+                    <button
+                      className="return-approve-btn"
+                      onClick={() => handleReturn(selectedOrder._id, "approve")}
+                    >
+                      ✔ Approve Return
+                    </button>
+                    <button
+                      className="return-reject-btn"
+                      onClick={() => handleReturn(selectedOrder._id, "reject")}
+                    >
+                      ✕ Reject Return
+                    </button>
+                  </div>
+                </div>
+              )}
             </div>
           </div>
         </div>

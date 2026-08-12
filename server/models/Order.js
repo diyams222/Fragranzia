@@ -44,8 +44,13 @@ const orderSchema = new mongoose.Schema(
     },
     status: {
       type: String,
-      enum: ["Pending", "Processing", "Shipped", "Delivered", "Cancelled"],
+      enum: ["Pending", "Processing", "Shipped", "Delivered", "Cancelled", "Return Requested", "Returned"],
       default: "Pending",
+    },
+    returnRequest: {
+      reason: { type: String, default: "" },
+      requestedAt: { type: Date },
+      adminNote: { type: String, default: "" },
     },
   },
   { timestamps: true }

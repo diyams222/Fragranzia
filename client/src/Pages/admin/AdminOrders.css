@@ -258,3 +258,38 @@
   cursor: pointer;
   outline: none;
 }
+
+/* Return approve / reject buttons */
+.return-approve-btn {
+  padding: 9px 20px;
+  background: #10b981;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.return-approve-btn:hover {
+  background: #059669;
+}
+
+.return-reject-btn {
+  padding: 9px 20px;
+  background: transparent;
+  color: #ef4444;
+  border: 1.5px solid #ef4444;
+  border-radius: 6px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s;
+}
+
+.return-reject-btn:hover {
+  background: #ef4444;
+  color: #fff;
+}
+

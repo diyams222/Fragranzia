@@ -138,3 +138,150 @@
   color: #1f2937;
   font-size: 16px;
 }
+
+/* Footer right group (total + cancel btn) */
+.order-footer-right {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+/* Cancel order button */
+.cancel-order-btn {
+  padding: 7px 18px;
+  background: transparent;
+  color: #ef4444;
+  border: 1.5px solid #ef4444;
+  border-radius: 6px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s;
+}
+
+.cancel-order-btn:hover {
+  background: #ef4444;
+  color: #fff;
+}
+
+/* Return Order button */
+.return-order-btn {
+  padding: 7px 18px;
+  background: transparent;
+  color: #6366f1;
+  border: 1.5px solid #6366f1;
+  border-radius: 6px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s;
+}
+
+.return-order-btn:hover {
+  background: #6366f1;
+  color: #fff;
+}
+
+/* Inline return form */
+.return-form-panel {
+  padding: 16px 20px;
+  background: #f5f3ff;
+  border-top: 1px solid #e0e7ff;
+  border-bottom: 1px solid #e0e7ff;
+}
+
+.return-form-label {
+  font-size: 14px;
+  font-weight: 600;
+  color: #4338ca;
+  margin: 0 0 10px 0;
+}
+
+.return-reason-input {
+  width: 100%;
+  padding: 10px 12px;
+  border: 1.5px solid #c7d2fe;
+  border-radius: 8px;
+  font-size: 14px;
+  color: #1f2937;
+  resize: vertical;
+  background: #fff;
+  box-sizing: border-box;
+  outline: none;
+  transition: border-color 0.2s;
+}
+
+.return-reason-input:focus {
+  border-color: #6366f1;
+}
+
+.return-form-actions {
+  display: flex;
+  gap: 12px;
+  margin-top: 12px;
+}
+
+.return-submit-btn {
+  padding: 8px 20px;
+  background: #6366f1;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.return-submit-btn:hover:not(:disabled) {
+  background: #4f46e5;
+}
+
+.return-submit-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.return-cancel-form-btn {
+  padding: 8px 18px;
+  background: transparent;
+  color: #6b7280;
+  border: 1.5px solid #d1d5db;
+  border-radius: 6px;
+  font-size: 13px;
+  cursor: pointer;
+  transition: border-color 0.2s, color 0.2s;
+}
+
+.return-cancel-form-btn:hover:not(:disabled) {
+  border-color: #9ca3af;
+  color: #374151;
+}
+
+/* Return info display (after return requested / returned) */
+.return-info-box {
+  padding: 12px 20px;
+  background: #fff7ed;
+  border-top: 1px solid #fed7aa;
+  border-bottom: 1px solid #fed7aa;
+}
+
+.return-info-label {
+  font-size: 13px;
+  font-weight: 700;
+  color: #c2410c;
+  margin: 0 0 4px 0;
+}
+
+.return-info-reason {
+  font-size: 14px;
+  color: #374151;
+  margin: 0 0 6px 0;
+}
+
+.return-admin-note {
+  font-size: 13px;
+  color: #6b7280;
+  margin: 0;
+  font-style: italic;
+}

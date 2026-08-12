@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import axios from "axios";
 import "./Singlepage.css";
 import Navbar from "../../components/user/Navbar";
@@ -7,11 +7,15 @@ import Footer from "../../components/user/Footer";
 
 function Singlepage() {
   const { id } = useParams();
+  const navigate = useNavigate(); // NEW
 
   const [product, setProduct] = useState(null);
+  const [products, setProducts] = useState([]); // NEW
+  const [suggestedPage, setSuggestedPage] = useState(0);
 
   useEffect(() => {
     fetchProduct();
+    fetchProducts(); // NEW
   }, [id]);
 
   const fetchProduct = async () => {
@@ -28,8 +32,20 @@ function Singlepage() {
     }
   };
 
+  // NEW
+  const fetchProducts = async () => {
+    try {
+      const res = await axios.get(
+        "http://localhost:5000/api/products"
+      );
+      setProducts(res.data);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   if (!product) {
-    return <h2 className="loading">Loading...</h2>;
+    return <h2>Loading...</h2>;
   }
 
   return (
@@ -100,6 +116,77 @@ function Singlepage() {
         </div>
 
       </div>
+
+      {/* ---------- Suggested Products ---------- */}
+
+      <div className="sforu">
+        <h2>Suggested For You</h2>
+      </div>
+
+<div className="featured-section">
+
+    {suggestedPage > 0 && (
+        <button
+            className="featured-prev-btn"
+            onClick={() => setSuggestedPage(prev => prev - 1)}
+        >
+            &#8249;
+        </button>
+    )}
+
+    <div className="perfumes">
+
+        {products
+            .filter(item => item._id !== product._id)
+            .slice(suggestedPage * 5, suggestedPage * 5 + 5)
+            .map((item) => (
+
+                <div
+                    className="product-card"
+                    key={item._id}
+                    onClick={() => navigate(`/product/${item._id}`)}
+                >
+
+                    {item.images?.length > 0 && (
+                        <img
+                            src={`http://localhost:5000/uploads/${item.images[0]}`}
+                            alt={item.title}
+                        />
+                    )}
+
+                    <h3>{item.title}</h3>
+
+                    <p className="sprice">
+                        RS {item.salePrice}
+                    </p>
+
+                    <p className="oprice">
+                        RS {item.Price}
+                    </p>
+
+                    <button>
+                        Add to Cart
+                    </button>
+
+                </div>
+
+            ))}
+
+    </div>
+
+    {products.filter(item => item._id !== product._id).length >
+        (suggestedPage * 5 + 5) && (
+
+        <button
+            className="featured-next-btn"
+            onClick={() => setSuggestedPage(prev => prev + 1)}
+        >
+            &#8250;
+        </button>
+
+    )}
+
+</div>
 
       <Footer />
     </>

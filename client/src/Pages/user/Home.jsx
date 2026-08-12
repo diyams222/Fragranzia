@@ -260,39 +260,6 @@ const handleToggleWishlist = async (e, productId) => {
 
   
 
-{/* <div className="per1">
-        <img src={per1} alt="" />
-        <button>Add to cart</button>
-
-     </div>
-<div className="per2">
-        <img src={per2} alt="" />
-        <button>Add to cart</button>
-        
-
-</div>
-<div className="per3">
-        <img src={per3} alt="" />
-        <button>Add to cart</button>
-
-
-</div>
-<div className="per4">
-        <img src={per4} alt="" />
-        <button>Add to cart</button>
-
-
-</div>
-<div className="per5">
-        <img src={per5} alt="" />
-        <button>Add to cart</button>
-
-
-</div>
-
-
-        </div> */}
-
         <div className="para">
             <p>"It's an art. A craft. A science. At Fragranzia, we're in <br /> the business of creating memories that last forever <br /> through our fragrances."</p>
         </div>
