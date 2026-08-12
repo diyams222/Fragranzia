@@ -1,146 +1,310 @@
-.nav-icons-allproducts{
-    display: flex;
-    gap: 30px;
-    align-items: end;
-    justify-content: end;
-    margin-left: 382px;
-}
-.nav-icons-allproducts button{
-    font-size: 18px;
-    /* background-color: rgb(5, 5, 136); */
-    /* align-items: end; */
-}
-.logo-allproducts{
-    display: flex;
-    gap: 33%;
-    margin-left: 27px;
-    /* align-items: end; */
-}
-.navbar-allproducts{
-    /* justify-content: end; */
-    display: flex;
-    width: 100%;
-}
-.sect1-all{
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 40px;
-    padding: 40px;
-    max-width: 1200px;
-    margin: auto;
-}
-.product-card-all{
-    width: 280px;
-    position: relative;
-    transition: .3s;
+/* ================================================
+   SORT / FILTER BAR
+   ================================================ */
+.ap-sortbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 18px 40px 6px 40px;
+  border-bottom: 1px solid #ebebeb;
+  flex-wrap: wrap;
+  gap: 10px;
 }
 
-/* ===== Wishlist Heart Button (All Products) ===== */
+.ap-sortbar-left {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.ap-page-title {
+  font-size: 26px;
+  font-weight: 700;
+  color: #111;
+  margin: 0;
+  line-height: 1.2;
+}
+
+.ap-breadcrumb {
+  font-size: 12px;
+  color: #888;
+  margin: 0;
+}
+
+.ap-sortbar-right {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.ap-sort-label {
+  font-size: 13px;
+  font-weight: 600;
+  color: #444;
+  margin-right: 4px;
+  white-space: nowrap;
+}
+
+.ap-sort-options {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+}
+
+.ap-sort-btn {
+  background: none;
+  border: none;
+  padding: 6px 12px;
+  font-size: 13px;
+  font-weight: 500;
+  color: #444;
+  cursor: pointer;
+  border-radius: 4px;
+  transition: color 0.18s, background 0.18s;
+  white-space: nowrap;
+}
+
+.ap-sort-btn:hover {
+  color: #0d2f82;
+  background: #f0f3ff;
+}
+
+.ap-sort-btn--active {
+  color: #0d2f82;
+  font-weight: 700;
+  background: transparent;
+}
+
+/* Filter button */
+.ap-filter-wrap {
+  position: relative;
+  margin-left: 8px;
+}
+
+.ap-filter-btn {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  padding: 7px 16px;
+  border: 1.5px solid #bbb;
+  border-radius: 22px;
+  background: #fff;
+  font-size: 13px;
+  font-weight: 600;
+  color: #333;
+  cursor: pointer;
+  transition: border-color 0.18s, background 0.18s, color 0.18s;
+  white-space: nowrap;
+}
+
+.ap-filter-btn:hover,
+.ap-filter-btn--open {
+  border-color: #0d2f82;
+  color: #0d2f82;
+  background: #f0f3ff;
+}
+
+.ap-filter-icon {
+  font-size: 14px;
+}
+
+/* Filter dropdown */
+.ap-filter-dropdown {
+  position: absolute;
+  top: calc(100% + 8px);
+  right: 0;
+  min-width: 180px;
+  background: #fff;
+  border: 1px solid #e0e0e0;
+  border-radius: 10px;
+  box-shadow: 0 8px 28px rgba(0,0,0,0.12);
+  padding: 10px 8px;
+  z-index: 200;
+  animation: ap-fade-in 0.15s ease;
+}
+
+@keyframes ap-fade-in {
+  from { opacity: 0; transform: translateY(-6px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.ap-filter-heading {
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  color: #999;
+  letter-spacing: 0.6px;
+  padding: 4px 8px 6px;
+  margin: 0;
+}
+
+.ap-filter-option {
+  display: block;
+  width: 100%;
+  text-align: left;
+  background: none;
+  border: none;
+  padding: 8px 12px;
+  font-size: 13px;
+  color: #333;
+  cursor: pointer;
+  border-radius: 6px;
+  transition: background 0.15s, color 0.15s;
+}
+
+.ap-filter-option:hover {
+  background: #f0f3ff;
+  color: #0d2f82;
+}
+
+.ap-filter-option--active {
+  background: #e8edff;
+  color: #0d2f82;
+  font-weight: 600;
+}
+
+/* ================================================
+   PRODUCT GRID
+   ================================================ */
+.sect1-all {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 40px;
+  padding: 40px;
+  max-width: 1200px;
+  margin: auto;
+}
+
+.ap-empty {
+  grid-column: 1 / -1;
+  text-align: center;
+  color: #888;
+  font-size: 15px;
+  padding: 60px 0;
+}
+
+.product-card-all {
+  width: 280px;
+  position: relative;
+  transition: .3s;
+  cursor: pointer;
+}
+
+.product-card-all:hover {
+  transform: translateY(-6px);
+}
+
+/* ===== Wishlist Heart Button ===== */
 .wishlist-heart-btn-all {
-    position: absolute;
-    top: 10px;
-    right: 10px;
-    width: 34px;
-    height: 34px;
-    border-radius: 50%;
-    border: none;
-    background: rgba(255, 255, 255, 0.92);
-    box-shadow: 0 2px 8px rgba(0,0,0,0.15);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    z-index: 10;
-    transition: transform 0.2s, box-shadow 0.2s;
-    padding: 0;
-    margin: 0;
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  border: none;
+  background: rgba(255, 255, 255, 0.92);
+  box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  z-index: 10;
+  transition: transform 0.2s, box-shadow 0.2s;
+  padding: 0;
+  margin: 0;
 }
 
 .wishlist-heart-btn-all:hover {
-    transform: scale(1.15);
-    box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+  transform: scale(1.15);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.2);
 }
 
 .heart-icon-all {
-    font-size: 16px;
-    color: #aaa;
-    transition: color 0.2s;
+  font-size: 16px;
+  color: #aaa;
+  transition: color 0.2s;
 }
 
 .heart-active-all {
-    color: #e53935 !important;
+  color: #e53935 !important;
 }
 
 /* Override default button styles inside product card */
 .product-card-all .wishlist-heart-btn-all {
-    width: 34px !important;
-    height: 34px !important;
-    margin: 0 !important;
-    background: rgba(255, 255, 255, 0.92) !important;
-    color: inherit !important;
+  width: 34px !important;
+  height: 34px !important;
+  margin: 0 !important;
+  background: rgba(255, 255, 255, 0.92) !important;
+  color: inherit !important;
 }
 
-.product-card-all:hover{
-    transform: translateY(-6px);
+.product-card-all h3 {
+  font-size: 13px;
+  font-weight: 500;
+  padding: 0 7px;
+  margin-top: 10px;
+  color: #222;
+  min-height: 35px;
+  margin-left: 37px;
 }
 
-.product-card-all h3{
-    font-size: 13px;
-    font-weight: 500;
-    padding: 0 7px;
-    margin-top: 10px;
-    color: #222;
-    min-height: 35px;
-    margin-left: 37px;
+.product-card-all img {
+  width: 90%;
+  margin-left: 40px;
 }
 
-.product-card-all img{
-    width: 90%;
-    margin-left: 40px;
+.product-card-all button {
+  width: 85%;
+  height: 40px;
+  margin-left: 40px;
+  background-color: rgb(12, 18, 133);
+  color: white;
 }
 
-.product-card-all button{
-    width: 85%;
-    height: 40px;
-    margin-left: 40px;
-    background-color: rgb(12, 18, 133);
-    color: white;
+.product-card-all button:hover {
+  background: #01283c;
 }
 
-.product-card-all button:hover{
-    background: #01283c;
+.sprice-all {
+  font-size: 15px;
+  font-weight: bold;
+  color: black;
+  padding-top: 10px;
+  margin-left: 37px;
 }
 
-.sprice-all{
-    font-size: 15px;
-    font-weight: bold;
-    color: black;
-    padding-top: 10px;
-    margin-left: 37px;
+.oprice-all {
+  color: #888;
+  text-decoration: line-through;
+  font-size: 14px;
+  margin-left: 37px;
 }
 
-.oprice-all{
-    color: #888;
-    text-decoration: line-through;
-    font-size: 14px;
-    margin-left: 37px;
+/* ================================================
+   RESPONSIVE
+   ================================================ */
+@media (max-width: 900px) {
+  .ap-sortbar {
+    padding: 14px 20px 6px 20px;
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  .ap-sortbar-right {
+    width: 100%;
+    overflow-x: auto;
+    padding-bottom: 4px;
+  }
+  .sect1-all {
+    grid-template-columns: repeat(2, 1fr);
+    padding: 20px;
+    gap: 20px;
+  }
 }
-.allpr{
-    display: flex;
-    gap: 30px;
-    /* align-items: end; */
-    /* justify-content: end; */
-    margin-left: 38px;
-}
-.allpr2{
-    display: flex;
-    gap: 30px;
-    margin-left: 170px;
-    margin-top: 27px;
-    /* justify-content: end; */
-    /* align-items: end; */
-}
-.hed{
-    font-size: 12px;
-    margin-left: 25px;
+
+@media (max-width: 550px) {
+  .sect1-all {
+    grid-template-columns: 1fr;
+  }
 }

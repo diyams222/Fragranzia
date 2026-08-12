@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
+import { useSearchParams } from "react-router-dom";
 import { MdCloudUpload } from "react-icons/md";
 import "./Products.css";
 
@@ -9,18 +10,54 @@ const EMPTY_FORM = {
 };
 
 function Products() {
+  const [searchParams] = useSearchParams();
+  const editId = searchParams.get("edit"); // null when adding, product _id when editing
+
   const [formData,   setFormData]   = useState(EMPTY_FORM);
   const [categories, setCategories] = useState([]);
   const [image,      setImage]      = useState(null);
   const [preview,    setPreview]    = useState(null);
   const [saving,     setSaving]     = useState(false);
   const [toast,      setToast]      = useState({ msg: "", type: "" });
+  const [loadingEdit, setLoadingEdit] = useState(false);
 
   useEffect(() => {
     axios.get("http://localhost:5000/api/categories")
       .then(r => setCategories(r.data))
       .catch(() => {});
   }, []);
+
+  // When editId is present, fetch that product and pre-fill the form
+  useEffect(() => {
+    if (!editId) {
+      setFormData(EMPTY_FORM);
+      setImage(null);
+      setPreview(null);
+      return;
+    }
+    setLoadingEdit(true);
+    axios.get(`http://localhost:5000/api/products/${editId}`)
+      .then(r => {
+        const p = r.data;
+        setFormData({
+          title:       p.title       || "",
+          price:       p.price       ?? "",
+          salePrice:   p.salePrice   ?? "",
+          quantity:    p.quantity    ?? "",
+          tags:        Array.isArray(p.tags) ? p.tags.join(",") : (p.tags || ""),
+          category:    p.category    || "",
+          offer:       p.offer       || "",
+          description: p.description || "",
+          hasVariants: !!p.hasVariants,
+        });
+        // Show the first existing image as preview if no new file chosen
+        if (p.images && p.images.length > 0) {
+          setPreview(`http://localhost:5000/uploads/${p.images[0]}`);
+        }
+      })
+      .catch(() => showToast("Failed to load product data.", "error"))
+      .finally(() => setLoadingEdit(false));
+  }, [editId]);
 
   const showToast = (msg, type = "success") => {
     setToast({ msg, type });
@@ -50,13 +87,20 @@ function Products() {
       Object.entries(formData).forEach(([k, v]) => data.append(k, v));
       if (image) data.append("images", image);
 
-      await axios.post("http://localhost:5000/api/products", data);
-      showToast("Product added successfully!");
-      setFormData(EMPTY_FORM);
-      setImage(null);
-      setPreview(null);
+      if (editId) {
+        // UPDATE existing product
+        await axios.put(`http://localhost:5000/api/products/${editId}`, data);
+        showToast("Product updated successfully!");
+      } else {
+        // CREATE new product
+        await axios.post("http://localhost:5000/api/products", data);
+        showToast("Product added successfully!");
+        setFormData(EMPTY_FORM);
+        setImage(null);
+        setPreview(null);
+      }
     } catch (err) {
-      showToast(err.response?.data?.message || "Failed to add product.", "error");
+      showToast(err.response?.data?.message || (editId ? "Failed to update product." : "Failed to add product."), "error");
     } finally {
       setSaving(false);
     }
@@ -75,8 +119,12 @@ function Products() {
         {/* Header */}
         <div className="ap-form-header">
           <div>
-            <h2 className="ap-form-title">Add Product</h2>
-            <p className="ap-form-sub">Add your product and necessary information from here</p>
+            <h2 className="ap-form-title">{editId ? "Edit Product" : "Add Product"}</h2>
+            <p className="ap-form-sub">
+              {editId
+                ? "Update your product details below"
+                : "Add your product and necessary information from here"}
+            </p>
           </div>
           <div className="ap-variants-toggle-row">
             <span className="ap-variants-label">Does this product have variants?</span>
@@ -173,9 +221,11 @@ function Products() {
           <button
             className="ap-save-btn"
             onClick={handleSave}
-            disabled={saving}
+            disabled={saving || loadingEdit}
           >
-            {saving ? "Saving..." : "Save Product"}
+            {saving
+              ? (editId ? "Updating..." : "Saving...")
+              : (editId ? "Update Product" : "Save Product")}
           </button>
         </div>
 
