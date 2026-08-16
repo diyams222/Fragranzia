@@ -27,12 +27,16 @@ function Login() {
       }
     );
 
-    alert(res.data.message);
+   alert(res.data.message);
 
-    // Save logged-in user
-    localStorage.setItem("user", JSON.stringify(res.data.user));
+// Save logged-in user
+localStorage.setItem("user", JSON.stringify(res.data.user));
 
-    navigate("/home");
+if (res.data.user.role === "admin") {
+  navigate("/showpage");
+} else {
+  navigate("/home");
+}
 
   } catch (error) {
     alert(

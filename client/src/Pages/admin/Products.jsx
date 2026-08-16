@@ -1,237 +1,217 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import axios from "axios";
-import { useSearchParams } from "react-router-dom";
-import { MdCloudUpload } from "react-icons/md";
-import "./Products.css";
+import { useNavigate } from "react-router-dom";
+import AdminNavBar from "../../components/admin/AdminNavBar";
+import AdminSidebar from "../../components/admin/AdminSidebar";
+import "./AddProduct.css";
 
-const EMPTY_FORM = {
-  title: "", price: "", salePrice: "", quantity: "",
-  tags: "", category: "", offer: "", description: "", hasVariants: false,
-};
+const ITEMS_PER_PAGE = 8;
 
-function Products() {
-  const [searchParams] = useSearchParams();
-  const editId = searchParams.get("edit"); // null when adding, product _id when editing
-
-  const [formData,   setFormData]   = useState(EMPTY_FORM);
+function AddProduct() {
+  const navigate = useNavigate();
+  const [products,   setProducts]   = useState([]);
+  const [loading,    setLoading]    = useState(true);
+  const [search,     setSearch]     = useState("");
+  const [category,   setCategory]   = useState("All Categories");
+  const [varStatus,  setVarStatus]  = useState("Any Variant Status");
   const [categories, setCategories] = useState([]);
-  const [image,      setImage]      = useState(null);
-  const [preview,    setPreview]    = useState(null);
-  const [saving,     setSaving]     = useState(false);
-  const [toast,      setToast]      = useState({ msg: "", type: "" });
-  const [loadingEdit, setLoadingEdit] = useState(false);
+  const [page,       setPage]       = useState(1);
 
   useEffect(() => {
+    fetchProducts();
     axios.get("http://localhost:5000/api/categories")
       .then(r => setCategories(r.data))
       .catch(() => {});
   }, []);
 
-  // When editId is present, fetch that product and pre-fill the form
-  useEffect(() => {
-    if (!editId) {
-      setFormData(EMPTY_FORM);
-      setImage(null);
-      setPreview(null);
-      return;
-    }
-    setLoadingEdit(true);
-    axios.get(`http://localhost:5000/api/products/${editId}`)
-      .then(r => {
-        const p = r.data;
-        setFormData({
-          title:       p.title       || "",
-          price:       p.price       ?? "",
-          salePrice:   p.salePrice   ?? "",
-          quantity:    p.quantity    ?? "",
-          tags:        Array.isArray(p.tags) ? p.tags.join(",") : (p.tags || ""),
-          category:    p.category    || "",
-          offer:       p.offer       || "",
-          description: p.description || "",
-          hasVariants: !!p.hasVariants,
-        });
-        // Show the first existing image as preview if no new file chosen
-        if (p.images && p.images.length > 0) {
-          setPreview(`http://localhost:5000/uploads/${p.images[0]}`);
-        }
-      })
-      .catch(() => showToast("Failed to load product data.", "error"))
-      .finally(() => setLoadingEdit(false));
-  }, [editId]);
-
-  const showToast = (msg, type = "success") => {
-    setToast({ msg, type });
-    setTimeout(() => setToast({ msg: "", type: "" }), 3000);
-  };
-
-  const handleChange = (e) => {
-    const { name, value, type, checked } = e.target;
-    setFormData(prev => ({ ...prev, [name]: type === "checkbox" ? checked : value }));
-  };
-
-  const handleImageChange = (e) => {
-    const file = e.target.files[0];
-    if (!file) return;
-    setImage(file);
-    setPreview(URL.createObjectURL(file));
-  };
-
-  const handleSave = async () => {
-    if (!formData.title || !formData.price || !formData.salePrice) {
-      showToast("Please fill in Title, Price and Sale Price.", "error");
-      return;
-    }
-    setSaving(true);
+  const fetchProducts = async () => {
+    setLoading(true);
     try {
-      const data = new FormData();
-      Object.entries(formData).forEach(([k, v]) => data.append(k, v));
-      if (image) data.append("images", image);
-
-      if (editId) {
-        // UPDATE existing product
-        await axios.put(`http://localhost:5000/api/products/${editId}`, data);
-        showToast("Product updated successfully!");
-      } else {
-        // CREATE new product
-        await axios.post("http://localhost:5000/api/products", data);
-        showToast("Product added successfully!");
-        setFormData(EMPTY_FORM);
-        setImage(null);
-        setPreview(null);
-      }
-    } catch (err) {
-      showToast(err.response?.data?.message || (editId ? "Failed to update product." : "Failed to add product."), "error");
+      const res = await axios.get("http://localhost:5000/api/products");
+      setProducts(res.data);
+    } catch {
+      setProducts([]);
     } finally {
-      setSaving(false);
+      setLoading(false);
     }
   };
+
+  const handleDelete = async (id) => {
+    if (!window.confirm("Delete this product?")) return;
+    try {
+      await axios.delete(`http://localhost:5000/api/products/${id}`);
+      fetchProducts();
+    } catch { /* ignore */ }
+  };
+
+  const resetFilters = () => {
+    setSearch("");
+    setCategory("All Categories");
+    setVarStatus("Any Variant Status");
+    setPage(1);
+  };
+
+  /* ── Filter ── */
+  const filtered = products.filter(p => {
+    const matchSearch = p.title?.toLowerCase().includes(search.toLowerCase());
+    const matchCat    = category === "All Categories" || p.category === category;
+    const matchVar    =
+      varStatus === "Any Variant Status" ||
+      (varStatus === "Has Variants"    &&  p.hasVariants) ||
+      (varStatus === "No Variants"     && !p.hasVariants);
+    return matchSearch && matchCat && matchVar;
+  });
+
+  /* ── Pagination ── */
+  const totalPages = Math.max(1, Math.ceil(filtered.length / ITEMS_PER_PAGE));
+  const paginated  = filtered.slice((page - 1) * ITEMS_PER_PAGE, page * ITEMS_PER_PAGE);
 
   return (
-    <div className="ap-page">
+    <>
+      <AdminNavBar />
+      <div className="adp-layout">
+        <AdminSidebar />
 
-      {/* Toast */}
-      {toast.msg && (
-        <div className={`ap-toast ap-toast-${toast.type}`}>{toast.msg}</div>
-      )}
+        <div className="adp-main">
 
-      <div className="ap-form-page">
+          {/* Top action row */}
+          <div className="adp-top-row">
+            <div className="adp-top-left">
+              <button className="adp-outline-btn">Export</button>
+              <button className="adp-outline-btn">Import</button>
+            </div>
+            <button
+              className="adp-add-btn"
+              onClick={() => navigate("/addproduct")}
+            >
+              + Add Product
+            </button>
+          </div>
 
-        {/* Header */}
-        <div className="ap-form-header">
-          <div>
-            <h2 className="ap-form-title">{editId ? "Edit Product" : "Add Product"}</h2>
-            <p className="ap-form-sub">
-              {editId
-                ? "Update your product details below"
-                : "Add your product and necessary information from here"}
-            </p>
-          </div>
-          <div className="ap-variants-toggle-row">
-            <span className="ap-variants-label">Does this product have variants?</span>
-            <label className="ap-switch">
-              <input
-                type="checkbox" name="hasVariants"
-                checked={formData.hasVariants} onChange={handleChange}
-              />
-              <span className="ap-slider" />
-            </label>
-          </div>
-        </div>
+          {/* Filter row */}
+          <div className="adp-filter-row">
+            <input
+              className="adp-search"
+              placeholder="Search Products..."
+              value={search}
+              onChange={e => { setSearch(e.target.value); setPage(1); }}
+            />
 
-        {/* Row 1 — Title / Price / Sale Price / Quantity */}
-        <div className="ap-row-4">
-          <div className="ap-field">
-            <label>Product Title/Name</label>
-            <input type="text" name="title" value={formData.title} onChange={handleChange} />
-          </div>
-          <div className="ap-field">
-            <label>Product Price</label>
-            <input type="number" name="price" value={formData.price} onChange={handleChange} />
-          </div>
-          <div className="ap-field">
-            <label>Sale Price</label>
-            <input type="number" name="salePrice" value={formData.salePrice} onChange={handleChange} />
-          </div>
-          <div className="ap-field">
-            <label>Product Quantity</label>
-            <input type="number" name="quantity" value={formData.quantity} onChange={handleChange} />
-          </div>
-        </div>
-
-        {/* Row 2 — Tags / Category / Offer */}
-        <div className="ap-row-3">
-          <div className="ap-field">
-            <label>Product Tags</label>
-            <input type="text" name="tags" value={formData.tags}
-              onChange={handleChange} placeholder="perfume,luxury,men" />
-          </div>
-          <div className="ap-field">
-            <label>Category</label>
-            <select name="category" value={formData.category} onChange={handleChange}>
-              <option value="">Select Category</option>
-              {categories.length > 0
-                ? categories.map(c => <option key={c._id} value={c.name}>{c.name}</option>)
-                : <>
-                    <option value="Men">Men</option>
-                    <option value="Women">Women</option>
-                    <option value="Unisex">Unisex</option>
-                    <option value="Gift Sets">Gift Sets</option>
-                  </>
-              }
+            <select
+              className="adp-select"
+              value={category}
+              onChange={e => { setCategory(e.target.value); setPage(1); }}
+            >
+              <option>All Categories</option>
+              {categories.map(c => (
+                <option key={c._id} value={c.name}>{c.name}</option>
+              ))}
             </select>
-          </div>
-          <div className="ap-field">
-            <label>Offer</label>
-            <select name="offer" value={formData.offer} onChange={handleChange}>
-              <option value="">Select Offer</option>
-              <option value="10">10% Off</option>
-              <option value="20">20% Off</option>
-              <option value="30">30% Off</option>
-              <option value="50">50% Off</option>
+
+            <select
+              className="adp-select"
+              value={varStatus}
+              onChange={e => { setVarStatus(e.target.value); setPage(1); }}
+            >
+              <option>Any Variant Status</option>
+              <option>Has Variants</option>
+              <option>No Variants</option>
             </select>
+
+            <button className="adp-reset-btn" onClick={resetFilters}>
+              Reset Filters
+            </button>
           </div>
-        </div>
 
-        {/* Description */}
-        <div className="ap-field">
-          <label>Product Description</label>
-          <textarea name="description" rows={5}
-            value={formData.description} onChange={handleChange} />
-        </div>
+          {/* Table */}
+          <div className="adp-table-wrap">
+            <table className="adp-table">
+              <thead>
+                <tr>
+                  <th>Product Name</th>
+                  <th>Category</th>
+                  <th>Variants</th>
+                  <th>Price</th>
+                  <th>Sale Price</th>
+                  <th>Stock</th>
+                  <th>Status</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                {loading ? (
+                  <tr>
+                    <td colSpan={8} className="adp-empty">Loading products...</td>
+                  </tr>
+                ) : paginated.length === 0 ? (
+                  <tr>
+                    <td colSpan={8} className="adp-empty">
+                      No products found matching the filters
+                    </td>
+                  </tr>
+                ) : (
+                  paginated.map(p => (
+                    <tr key={p._id}>
+                      <td className="adp-name-cell">
+                        {p.images?.[0] && (
+                          <img src={p.images[0]} alt="" className="adp-thumb" />
+                        )}
+                        <span>{p.title}</span>
+                      </td>
+                      <td>{p.category || "—"}</td>
+                      <td>
+                        <span className={`adp-var-badge ${p.hasVariants ? "adp-var-yes" : "adp-var-no"}`}>
+                          {p.hasVariants ? "Yes" : "No"}
+                        </span>
+                      </td>
+                      <td>₹{p.price}</td>
+                      <td>₹{p.salePrice}</td>
+                      <td>{p.quantity ?? "—"}</td>
+                      <td>
+                        <span className={`adp-status-badge ${p.quantity > 0 ? "adp-status-active" : "adp-status-out"}`}>
+                          {p.quantity > 0 ? "Active" : "Out of Stock"}
+                        </span>
+                      </td>
+                      <td className="adp-actions">
+                        <button className="adp-edit-btn"
+                          onClick={() => navigate(`/products?edit=${p._id}`)}>
+                          Edit
+                        </button>
+                        <button className="adp-del-btn"
+                          onClick={() => handleDelete(p._id)}>
+                          Delete
+                        </button>
+                      </td>
+                    </tr>
+                  ))
+                )}
+              </tbody>
+            </table>
+          </div>
 
-        {/* Image upload */}
-        <div className="ap-field">
-          <label>Product Image</label>
-          <label className="ap-upload-box">
-            <input type="file" accept="image/*"
-              style={{ display: "none" }} onChange={handleImageChange} />
-            {preview ? (
-              <img src={preview} alt="preview" className="ap-img-preview" />
-            ) : (
-              <>
-                <MdCloudUpload size={42} color="#b0b8c1" />
-                <p>Click to upload or drag &amp; drop (Single image)</p>
-              </>
-            )}
-          </label>
-        </div>
+          {/* Pagination */}
+          <div className="adp-pagination">
+            <button
+              className="adp-page-btn"
+              disabled={page === 1}
+              onClick={() => setPage(p => p - 1)}
+            >
+              Previous
+            </button>
+            <span className="adp-page-info">Page {page} of {totalPages}</span>
+            <button
+              className="adp-page-btn"
+              disabled={page === totalPages}
+              onClick={() => setPage(p => p + 1)}
+            >
+              Next
+            </button>
+          </div>
 
-        {/* Footer */}
-        <div className="ap-form-footer">
-          <button
-            className="ap-save-btn"
-            onClick={handleSave}
-            disabled={saving || loadingEdit}
-          >
-            {saving
-              ? (editId ? "Updating..." : "Saving...")
-              : (editId ? "Update Product" : "Save Product")}
-          </button>
         </div>
-
       </div>
-    </div>
+    </>
   );
 }
 
-export default Products;
+export default AddProduct;

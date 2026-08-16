@@ -1,6 +1,8 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
 import { FaHeart } from "react-icons/fa";
+import Footer from "../../components/user/Footer";
+
 
 import "./Home.css";
 import Navbar from "../../components/user/Navbar";

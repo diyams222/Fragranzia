@@ -36,6 +36,9 @@ function Signup() {
 
       alert(res.data.message);
 
+      // Save newly registered user
+      localStorage.setItem("user", JSON.stringify(res.data.user));
+
       // Clear form
       setName("");
       setEmail("");
@@ -96,11 +99,11 @@ function Signup() {
 
             <button onClick={handleSignup}>Sign Up</button><br />
             <p>
-  Already have an account?{" "}
-  <Link to="/login" className="signin-link">
-    Sign In
-  </Link>
-</p>
+              Already have an account?{" "}
+              <Link to="/login" className="signin-link">
+                Sign In
+              </Link>
+            </p>
           </div>
         </div>
       </div>
