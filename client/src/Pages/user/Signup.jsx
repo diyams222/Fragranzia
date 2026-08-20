@@ -4,6 +4,7 @@ import axios from "axios";
 import "./Signup.css";
 import perfume from "../../assets/perfume.png";
 import { Link } from "react-router-dom";
+import toast from "react-hot-toast";
 
 function Signup() {
   const navigate = useNavigate();
@@ -15,12 +16,12 @@ function Signup() {
 
   const handleSignup = async () => {
     if (!name || !email || !password || !confirmPassword) {
-      alert("Please fill all fields");
+      toast.error("Please fill all fields");
       return;
     }
 
     if (password !== confirmPassword) {
-      alert("Passwords do not match");
+      toast.error("Passwords do not match");
       return;
     }
 
@@ -34,7 +35,7 @@ function Signup() {
         }
       );
 
-      alert(res.data.message);
+      toast.success(res.data.message);
 
       // Save newly registered user
       localStorage.setItem("user", JSON.stringify(res.data.user));
@@ -48,7 +49,7 @@ function Signup() {
       // Go to Home page
       navigate("/home");
     } catch (error) {
-      alert(error.response?.data?.message || "Signup Failed");
+      toast.error(error.response?.data?.message || "Signup Failed");
     }
   };
 

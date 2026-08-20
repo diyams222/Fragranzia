@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import axios from "axios";
 import { FaHeart } from "react-icons/fa";
 import Footer from "../../components/user/Footer";
+import toast from "react-hot-toast";
 
 
 import "./Home.css";
@@ -53,6 +54,16 @@ function home() {
     const [featuredPage, setFeaturedPage] = useState(0);
     const user = JSON.parse(localStorage.getItem("user"));
 
+    // // Admin must not access /home from their active admin tab.
+    // // sessionStorage.adminTab is set on admin login and is tab-local —
+    // // a new tab starts with empty sessionStorage, so it won't be blocked.
+    // if (user?.role === "admin" && sessionStorage.getItem("adminTab") === "true") {
+    //   navigate("/showpage", { replace: true });
+    //   return null;
+    // }
+
+
+
 useEffect(() => {
     fetchProducts();
     if (user) fetchWishlist();
@@ -88,7 +99,7 @@ const fetchWishlist = async () => {
 const handleToggleWishlist = async (e, productId) => {
     e.stopPropagation();
     if (!user) {
-        alert("Please login first!");
+        toast.error("Please login first!");
         return;
     }
     const isWishlisted = wishlist.includes(productId);
@@ -105,7 +116,7 @@ const handleToggleWishlist = async (e, productId) => {
         }
     } catch (error) {
         console.error(error);
-        alert("Failed to update wishlist.");
+        toast.error("Failed to update wishlist.");
     }
 };
 
@@ -114,7 +125,7 @@ const handleToggleWishlist = async (e, productId) => {
     const user = JSON.parse(localStorage.getItem("user"));
 
     if (!user) {
-        alert("Please login first!");
+        toast.error("Please login first!");
         return;
     }
 
@@ -127,11 +138,11 @@ const handleToggleWishlist = async (e, productId) => {
             }
         );
 
-        alert(res.data.message);
+        toast.success(res.data.message);
 
     } catch (error) {
         console.error(error);
-        alert("Failed to add product to cart");
+        toast.error("Failed to add product to cart");
     }
 };
 

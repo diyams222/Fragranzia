@@ -1,10 +1,7 @@
 .logsign-btn{
     display: flex;
     gap: 8px;
-    /* align-content: end; */
-    /* justify-items: end; */
-    justify-content: end;
-    /* margin-right: 50px; */
+    justify-content: flex-end;
     padding: 10px;
     padding-bottom: 20px;
     padding-right: 40px;
@@ -19,25 +16,32 @@
 .smalls{
     display: flex;
     flex-wrap: wrap;
-    padding: 10px;
-    gap: 20px;
-    padding-right: 35px;
+    padding: 10px 16px;
+    gap: 16px;
 }
 .smalls img{
-    width: calc(33.333% - 14px);
+    width: calc(33.333% - 11px);
+    min-width: 0;
+    flex: 1 1 calc(33.333% - 11px);
 }
 
 
-.text{
+.text {
     display: flex;
-    /* flex-wrap: wrap; */
-    margin-left: 40px;
-    width: 40px;
+    width: 100%;
+    box-sizing: border-box;
     gap: 25px;
-    padding: 28px;
-    padding-top: 50px;
-    /* border: 1px solid; */
-    
+    padding: 50px 28px 28px;
+    margin-left: 0;
+    flex-wrap: wrap;
+}
+
+.text img {
+    width: calc((100% - 50px) / 3);
+    min-width: 0;
+    height: auto;
+    display: block;
+    flex: 1 1 200px;
 }
 .perfumes{
     display:flex;
@@ -50,10 +54,6 @@
 .product-card{
     width: 250px;
     position: relative;
-    /* background:#fff; */
-    /* border-radius:20px; */
-    /* overflow:hidden; */
-    /* box-shadow:0 2px 10px rgba(0,0,0,.12); */
     transition:.3s;
 }
 
@@ -158,49 +158,67 @@
     padding: 30px;
     width: 100%;
     justify-items: center;
-    /* margin-left: 280px; */
-    
+    box-sizing: border-box;
 }
 .pics{
     display: flex;
-    padding: 40px;
-    gap: 4px;
+    flex-wrap: wrap;
+    padding: 20px;
+    gap: 8px;
+}
+.pics > div {
+    flex: 1 1 200px;
+    min-width: 0;
 }
 .pics img{
-    width: 95%;
+    width: 100%;
+    display: block;
 }
 .explore{
- margin-left: 50px;
+ margin-left: 20px;
  font-size: 15px;
 }
 .sprays {
     display: flex;
+    flex-wrap: wrap;
     padding: 10px;
-    
+    gap: 8px;
+}
+.sprays > div {
+    flex: 1 1 140px;
+    min-width: 0;
 }
 .sprays img{
-    width: 85%;
-    margin-left: 30px;
+    width: 100%;
+    display: block;
 }
 .feau{
-    margin-left: 30px;
+    margin-left: 20px;
     padding: 20px;
     font-size: 15px;
     padding-bottom: 3px;
 }
 .perfumes2{
     display: flex;
+    flex-wrap: wrap;
+    gap: 16px;
+    padding: 16px;
+}
+.perfumes2 > div {
+    flex: 1 1 200px;
+    min-width: 0;
 }
 .perfumes2 img{
-    width: 80%;
-    padding: 30px;
-    padding-top: 10px;
-    margin-left: 18px;
+    width: 100%;
+    padding: 10px;
+    display: block;
 }
 .perfumes2 button{
     width: 85%;
     height: 40px;
-    margin-left: 48px;
+    margin-left: 0;
+    margin: 0 auto;
+    display: block;
     background-color: rgb(7, 14, 138);
     color: white;
     border: none;
@@ -212,7 +230,7 @@
     background-color: #01283c;
 }
 .offers{
-    margin-left: 35px;
+    margin-left: 20px;
     padding: 20px;
     font-size: 15px;
     padding-bottom: 1px;
@@ -220,33 +238,39 @@
 
 }
 .endsection {
-    width: 98%;
+    width: 100%;
     padding: 20px;
     padding-top: 80px;
+    box-sizing: border-box;
 }
 .endsection img{
     width: 100%;
 }
 .end{
     display: flex;
-    gap: 200px;
-    padding: 40px;
+    flex-wrap: wrap;
+    gap: 40px;
+    padding: 40px 30px;
     background-color: rgb(201, 252, 252);
-    /* margin-left: 30px; */
+}
+.end > div {
+    flex: 1 1 150px;
 }
 /* ================= HERO SLIDER ================= */
 
 .hero-slider{
     position: relative;
-    width: calc(100% - 75px);
-    margin-left: 50px;
+    width: 100%;
+    box-sizing: border-box;
+    padding: 0 16px;
     margin-top: 10px;
     margin-bottom: 30px;
 }
 
 .hero-banner{
-    width: 97%;
+    width: 100%;
     display: block;
+    border-radius: 8px;
     transition: 0.7s;
 }
 
@@ -254,8 +278,8 @@
 
 .shop-now-btn{
     position: absolute;
-    left: 90px;      /* Adjust if needed */
-    bottom: 110px;   /* Adjust if needed */
+    left: 90px;
+    bottom: 110px;
 
     width: 170px;
     height: 52px;
@@ -311,6 +335,7 @@
 .featured-section {
     display: flex;
     align-items: center;
+    overflow: hidden;
 }
 
 .featured-next-btn {
@@ -357,4 +382,195 @@
 .featured-prev-btn:hover {
     background: #01283c;
     transform: scale(1.12);
+}
+
+/* ═══════════════════════════════
+   TABLET  (768px – 1023px)
+   ═══════════════════════════════ */
+@media (max-width: 1023px) {
+    .smalls img {
+        width: calc(33.333% - 11px);
+        flex: 1 1 calc(33.333% - 11px);
+    }
+
+    .text img {
+        width: calc(50% - 13px);
+        flex: 1 1 calc(50% - 13px);
+    }
+
+    .shop-now-btn {
+        left: 50px;
+        bottom: 60px;
+        width: 130px;
+        height: 42px;
+        font-size: 16px;
+    }
+
+    .product-card {
+        width: 200px;
+    }
+
+    .sprays > div {
+        flex: 1 1 120px;
+    }
+}
+
+/* ═══════════════════════════════
+   MOBILE  (≤ 767px)
+   ═══════════════════════════════ */
+@media (max-width: 767px) {
+    .logsign-btn {
+        padding: 10px 16px 16px;
+        justify-content: center;
+    }
+
+    .hero-slider {
+        padding: 0 8px;
+        margin-bottom: 16px;
+    }
+
+    .hero-banner {
+        border-radius: 6px;
+    }
+
+    .shop-now-btn {
+        left: 20px;
+        bottom: 30px;
+        width: 110px;
+        height: 36px;
+        font-size: 14px;
+        border-radius: 6px;
+    }
+
+    .slider-dots {
+        bottom: 10px;
+    }
+
+    .dot {
+        width: 8px;
+        height: 8px;
+    }
+
+    .smalls {
+        padding: 8px;
+        gap: 8px;
+    }
+
+    .smalls img {
+        width: calc(50% - 4px);
+        flex: 1 1 calc(50% - 4px);
+    }
+
+    .text {
+        padding: 20px 12px 12px;
+        gap: 12px;
+    }
+
+    .text img {
+        width: 100%;
+        flex: 1 1 100%;
+    }
+
+    .feau {
+        margin-left: 8px;
+        padding: 12px;
+    }
+
+    .featured-section {
+        flex-direction: column;
+        gap: 16px;
+    }
+
+    .featured-next-btn,
+    .featured-prev-btn {
+        margin: 0;
+        width: 36px;
+        height: 36px;
+        font-size: 22px;
+    }
+
+    .product-card {
+        width: 160px;
+    }
+
+    .perfumes {
+        padding: 12px;
+        gap: 14px;
+    }
+
+    .perfumes img {
+        margin-left: 20px;
+    }
+
+    .product-card button {
+        margin-left: 20px;
+        width: 80%;
+    }
+
+    .product-card h3,
+    .sprice,
+    .oprice {
+        margin-left: 20px;
+    }
+
+    .para {
+        font-size: 15px;
+        padding: 16px;
+    }
+
+    .pics {
+        padding: 12px;
+        gap: 6px;
+    }
+
+    .pics > div {
+        flex: 1 1 100%;
+    }
+
+    .explore {
+        margin-left: 12px;
+    }
+
+    .sprays {
+        padding: 8px;
+        gap: 6px;
+    }
+
+    .sprays > div {
+        flex: 1 1 calc(50% - 6px);
+    }
+
+    .offers {
+        margin-left: 8px;
+        padding: 12px;
+        padding-top: 30px;
+    }
+
+    .endsection {
+        padding: 12px;
+        padding-top: 30px;
+    }
+
+    .end {
+        padding: 24px 16px;
+        gap: 24px;
+    }
+}
+
+/* ═══════════════════════════════
+   SMALL MOBILE  (≤ 480px)
+   ═══════════════════════════════ */
+@media (max-width: 480px) {
+    .smalls img {
+        width: 100%;
+        flex: 1 1 100%;
+    }
+
+    .sprays > div {
+        flex: 1 1 100%;
+    }
+
+    .product-card {
+        width: 140px;
+    }
 }

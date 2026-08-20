@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
 import "./AdminOrders.css";
+import toast from "react-hot-toast";
 
 function AdminOrders() {
   const [orders, setOrders] = useState([]);
@@ -31,7 +32,24 @@ function AdminOrders() {
       }
     } catch (error) {
       console.error("Failed to update status:", error);
-      alert("Failed to update order status.");
+      toast.error("Failed to update order status.");
+    }
+  };
+
+  const handleItemStatusChange = async (orderId, itemIndex, status) => {
+    try {
+      const res = await axios.patch(
+        `http://localhost:5000/api/orders/${orderId}/items/${itemIndex}/status`,
+        { status }
+      );
+      const updatedOrder = res.data.order;
+      setOrders((prev) => prev.map((o) => (o._id === orderId ? updatedOrder : o)));
+      if (selectedOrder?._id === orderId) {
+        setSelectedOrder(updatedOrder);
+      }
+    } catch (error) {
+      console.error("Failed to update item status:", error);
+      toast.error("Failed to update item status.");
     }
   };
 
@@ -46,6 +64,20 @@ function AdminOrders() {
       Returned: "#6366f1",
     };
     return map[status] || "#888";
+  };
+
+  /**
+   * Derives the most meaningful order status from per-item statuses.
+   * When all items are cancelled → "Cancelled".
+   * Otherwise picks the most-advanced active status (matches backend logic).
+   */
+  const getDerivedOrderStatus = (order) => {
+    const statuses = order.items.map((item) => item.itemStatus || "Pending");
+    const allCancelled = statuses.every((s) => s === "Cancelled");
+    if (allCancelled) return "Cancelled";
+    const priority = ["Returned", "Return Requested", "Delivered", "Shipped", "Processing", "Pending"];
+    const activeStatuses = statuses.filter((s) => s !== "Cancelled");
+    return priority.find((p) => activeStatuses.includes(p)) || order.status;
   };
 
   const handleReturn = async (orderId, action) => {
@@ -66,7 +98,7 @@ function AdminOrders() {
       }
     } catch (error) {
       console.error("Failed to handle return:", error);
-      alert("Failed to process return request.");
+      toast.error("Failed to process return request.");
     }
   };
 
@@ -77,6 +109,12 @@ function AdminOrders() {
       <div className="admin-orders-header">
         <h2>All Orders</h2>
         <span className="orders-count">{orders.length} orders</span>
+        <button
+          onClick={fetchOrders}
+          style={{ marginLeft: "auto", padding: "6px 14px", fontSize: 13, background: "#1f2937", color: "#fff", border: "none", borderRadius: 6, cursor: "pointer" }}
+        >
+          ↻ Refresh
+        </button>
       </div>
 
       {/* Table */}
@@ -120,9 +158,9 @@ function AdminOrders() {
                   <td>
                     <span
                       className="status-badge"
-                      style={{ background: statusColor(order.status) }}
+                      style={{ background: statusColor(getDerivedOrderStatus(order)) }}
                     >
-                      {order.status}
+                      {getDerivedOrderStatus(order)}
                     </span>
                   </td>
                   <td>
@@ -142,7 +180,15 @@ function AdminOrders() {
         <div className="order-modal-overlay" onClick={() => setSelectedOrder(null)}>
           <div className="order-modal" onClick={(e) => e.stopPropagation()}>
             <div className="modal-header">
-              <h3>Order #{selectedOrder._id.slice(-8).toUpperCase()}</h3>
+              <h3>
+                Order #{selectedOrder._id.slice(-8).toUpperCase()}
+                <span
+                  className="status-badge"
+                  style={{ background: statusColor(getDerivedOrderStatus(selectedOrder)), marginLeft: 12, fontSize: 12 }}
+                >
+                  {getDerivedOrderStatus(selectedOrder)}
+                </span>
+              </h3>
               <button className="modal-close" onClick={() => setSelectedOrder(null)}>✕</button>
             </div>
 
@@ -178,19 +224,47 @@ function AdminOrders() {
               <div className="modal-section">
                 <h4>Ordered Items</h4>
                 {selectedOrder.items.map((item, i) => (
-                  <div className="modal-item" key={i}>
-                    {item.image && (
-                      <img
-                        src={`http://localhost:5000/uploads/${item.image}`}
-                        alt={item.title}
-                      />
-                    )}
-                    <div>
-                      <p className="modal-item-title">{item.title}</p>
-                      <p className="modal-item-meta">
-                        Qty: {item.quantity} &nbsp;|&nbsp; ₹{item.salePrice} each
-                      </p>
+                  <div className="modal-item" key={i} style={{ flexDirection: "column", alignItems: "flex-start", gap: 8 }}>
+                    <div style={{ display: "flex", gap: 12, alignItems: "center", width: "100%" }}>
+                      {item.image && (
+                        <img
+                          src={`http://localhost:5000/uploads/${item.image}`}
+                          alt={item.title}
+                        />
+                      )}
+                      <div style={{ flex: 1 }}>
+                        <p className="modal-item-title">{item.title}</p>
+                        <p className="modal-item-meta">
+                          Qty: {item.quantity}&nbsp;|&nbsp;₹{item.salePrice} each
+                        </p>
+                      </div>
+                      {/* Per-item current status badge */}
+                      <span
+                        className="status-badge"
+                        style={{ background: statusColor(item.itemStatus || "Pending"), flexShrink: 0 }}
+                      >
+                        {item.itemStatus || "Pending"}
+                      </span>
                     </div>
+                    {/* Per-item status selector */}
+                    <div style={{ display: "flex", alignItems: "center", gap: 8, paddingLeft: 4 }}>
+                      <span style={{ fontSize: 12, color: "#6b7280" }}>Set item status:</span>
+                      <select
+                        style={{ fontSize: 13, padding: "4px 8px", borderRadius: 6, border: "1px solid #d1d5db", cursor: "pointer" }}
+                        value={item.itemStatus || "Pending"}
+                        onChange={(e) => handleItemStatusChange(selectedOrder._id, i, e.target.value)}
+                      >
+                        {["Pending", "Processing", "Shipped", "Delivered", "Cancelled", "Return Requested", "Returned"].map((s) => (
+                          <option key={s} value={s}>{s}</option>
+                        ))}
+                      </select>
+                    </div>
+                    {/* Show return reason if item has one */}
+                    {item.itemReturnRequest?.reason && (
+                      <p style={{ fontSize: 13, color: "#c2410c", margin: "2px 0 0 0" }}>
+                        &#128260; Return reason: {item.itemReturnRequest.reason}
+                      </p>
+                    )}
                   </div>
                 ))}
               </div>

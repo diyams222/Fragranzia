@@ -4,6 +4,7 @@ const router = express.Router();
 const {
   signup,
   login,
+  adminLogin,
   updateProfile,
   saveAddress,
   getAddresses,
@@ -25,6 +26,9 @@ router.post("/signup", signup);
 
 // Login
 router.post("/login", login);
+
+// Admin Login (separate endpoint — only accepts admin-role accounts)
+router.post("/admin-login", adminLogin);
 
 // Update Profile
 router.put("/profile/:id", updateProfile);

@@ -22,6 +22,18 @@ const orderSchema = new mongoose.Schema(
           required: true,
           min: 1,
         },
+        // Per-item lifecycle fields
+        itemStatus: {
+          type: String,
+          enum: ["Pending", "Processing", "Shipped", "Delivered", "Cancelled", "Return Requested", "Returned"],
+          default: "Pending",
+        },
+        cancelledAt: { type: Date, default: null },
+        itemReturnRequest: {
+          reason: { type: String, default: "" },
+          requestedAt: { type: Date, default: null },
+          adminNote: { type: String, default: "" },
+        },
       },
     ],
     shippingAddress: {

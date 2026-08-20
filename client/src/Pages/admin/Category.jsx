@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import "./Category.css";
 import axios from "axios";
+import toast from "react-hot-toast";
 
 const Category = ({ setShowCategory, fetchCategories }) => {
 
@@ -29,7 +30,7 @@ const Category = ({ setShowCategory, fetchCategories }) => {
 
       await fetchCategories();
 
-      alert("Category Added");
+      toast.success("Category Added");
 
       setCategoryData({
         name: "",
@@ -41,7 +42,7 @@ const Category = ({ setShowCategory, fetchCategories }) => {
 
     } catch (error) {
       console.log(error);
-      alert("Failed to add category");
+      toast.error("Failed to add category");
     }
   };
 

@@ -1,3 +1,4 @@
+import { Toaster } from "react-hot-toast";
 import Signup from "./Pages/user/Signup";
 import Login from "./Pages/user/Login";
 import Home from "./Pages/user/Home";
@@ -24,10 +25,42 @@ import Wishlist from "./Pages/user/Wishlist.jsx";
 import AdminOrders from "./Pages/admin/AdminOrders.jsx";
 import AdminCustomers from "./Pages/admin/AdminCustomers.jsx";
 import Products from "./Pages/admin/Products.jsx";
+import AdminLogin from "./Pages/admin/AdminLogin.jsx";
 
 function App() {
   return (
     <div>
+      <Toaster
+        position="top-right"
+        toastOptions={{
+          duration: 3000,
+          style: {
+            maxWidth: "380px",
+            padding: "18px 22px",
+            fontSize: "16px",
+            fontWeight: "500",
+            lineHeight: "1.5",
+            borderRadius: "10px",
+            boxShadow: "0 4px 18px rgba(0,0,0,0.15)",
+          },
+          iconTheme: {
+            primary: "currentColor",
+            secondary: "#fff",
+          },
+          success: {
+            iconTheme: {
+              primary: "#10b981",
+              secondary: "#fff",
+            },
+          },
+          error: {
+            iconTheme: {
+              primary: "#ef4444",
+              secondary: "#fff",
+            },
+          },
+        }}
+      />
       <BrowserRouter>
         <Routes>
 
@@ -35,6 +68,10 @@ function App() {
 
           <Route path="/signup" element={<Signup />} />
           <Route path="/login" element={<Login />} />
+          <Route path="/admin-login" element={<AdminLogin />} />
+          <Route path="/home" element={<Home />} />
+            <Route path="/allproducts" element={<Allproducts />} />
+
 
 
           {/* ==================== USER TEST ROUTES ==================== */}
@@ -42,15 +79,14 @@ function App() {
           <Route path="/navbar" element={<Navbar />} />
           <Route path="/adminnavbar" element={<AdminNavBar />} />
           <Route path="/adminsidebar" element={<AdminSidebar />} />
+            <Route path="/about" element={<About />} />
+
 
 
           {/* ==================== USER PROTECTED ROUTES ==================== */}
 
           <Route element={<UserProtectedRoute />}>
 
-            <Route path="/home" element={<Home />} />
-
-            <Route path="/allproducts" element={<Allproducts />} />
 
             <Route path="/singlepage" element={<Singlepage />} />
 
@@ -64,7 +100,6 @@ function App() {
 
             <Route path="/myorders" element={<MyOrders />} />
 
-            <Route path="/about" element={<About />} />
 
             <Route path="/checkout" element={<Checkout />} />
 

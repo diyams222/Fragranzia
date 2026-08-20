@@ -4,6 +4,7 @@ import axios from "axios";
 import { FaHeart, FaSlidersH } from "react-icons/fa";
 import "./Allproducts.css";
 import Navbar from "../../components/user/Navbar";
+import toast from "react-hot-toast";
 
 const SORT_OPTIONS = [
   { key: "relevance",  label: "Relevance" },
@@ -76,22 +77,22 @@ function Allproduct() {
 
   const handleAddToCart = async (productId) => {
     const u = JSON.parse(localStorage.getItem("user"));
-    if (!u) { alert("Please login first!"); return; }
+    if (!u) { toast.error("Please login first!"); return; }
     try {
       const res = await axios.post("http://localhost:5000/api/users/cart", {
         userId: u._id,
         productId,
       });
-      alert(res.data.message);
+      toast.success(res.data.message);
     } catch (error) {
       console.error(error);
-      alert("Failed to add product to cart");
+      toast.error("Failed to add product to cart");
     }
   };
 
   const handleToggleWishlist = async (e, productId) => {
     e.stopPropagation();
-    if (!user) { alert("Please login first!"); return; }
+    if (!user) { toast.error("Please login first!"); return; }
     const isWishlisted = wishlist.includes(productId);
     try {
       if (isWishlisted) {
@@ -106,7 +107,7 @@ function Allproduct() {
       }
     } catch (error) {
       console.error(error);
-      alert("Failed to update wishlist.");
+      toast.error("Failed to update wishlist.");
     }
   };
 

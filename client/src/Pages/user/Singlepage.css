@@ -1,23 +1,14 @@
-
-
-    /* margin: 0; */
-    /* padding: 0; */
-    /* box-sizing: border-box; */
+/* Singlepage.css — Fully Responsive */
 
 .nav-icons-s{
     display: flex;
     gap: 30px;
-    /* align-items: end; */
-
     align-items: center;
-    justify-content: end;
-    margin-left: 382px;
+    justify-content: flex-end;
+    flex: 1;
 }
 .nav-icons-s button{
     font-size: 18px;
-    /* background-color: rgb(5, 5, 136); */
-    /* align-items: end; */
-
     border: none;
     background: transparent;
     font-size: 22px;
@@ -25,47 +16,45 @@
 }
 .logo-s{
     display: flex;
-    gap: 23%;
-    /* margin-left: 27px; */
-
     align-items: center;
     justify-content: space-between;
+    width: 100%;
 }
 .logo-s h2{
     font-size: 28px;
     font-weight: 700;
 }
 .navbar-s{
-    /* justify-content: end; */
     display: flex;
     width: 100%;
-    /* border-bottom: 1px solid; */
-    padding: 20px 50px;
+    padding: 20px 30px;
+    box-sizing: border-box;
 }
 
 .sec1-s{
     display: flex;
     padding: 30px;
     padding-top: 50px;
-    /* width: 100% */
 }
 .single1{
     width: 450px;
+    flex-shrink: 0;
 }
 .single1 img{
     width: 80%;
+    max-width: 100%;
 }
 .mainsec-s{
     display: flex;
-    gap: 70px;
-    padding: 40px 60px;
-    
+    gap: 40px;
+    padding: 40px 40px;
+    flex-wrap: wrap;
 }
 .threetogether{
     display: flex;
     flex-direction: column;
     gap: 15px;
-
+    flex-shrink: 0;
 }
 .threetogether img{
     width: 115px;
@@ -76,8 +65,6 @@
 }
 .writings h3{
     font-size: 22px;
-    /* line-height: 42px; */
-    /* margin-bottom: 12px; */
 }
 .writings h5{
     font-size: 30px;
@@ -106,16 +93,20 @@
 .left-side-s{
     display: flex;
     flex-direction: column;
+    flex: 1;
+    min-width: 0;
 }
 .btns-s{
     flex-direction: column;
     display: flex;
     gap: 18px;
-    padding-left: 110px;
+    padding-left: 0;
     margin-top: 25px;
+    align-items: center;
 }
 .buy-btn{
-    width: 420px;
+    width: 100%;
+    max-width: 420px;
     height: 50px;
     background: #0d1b3d;
     color: white;
@@ -125,7 +116,8 @@
     cursor: pointer;
 }
 .cart-btn{
-    width: 420px;
+    width: 100%;
+    max-width: 420px;
     height: 50px;
     background:white;
     color: black;
@@ -136,32 +128,149 @@
 }
 
 .perfumes-s{
-    padding: 40px;
+    padding: 24px;
     display: flex;
-    padding-top: 30px;
+    flex-wrap: wrap;
+    gap: 16px;
+    padding-top: 20px;
+}
+.perfumes-s > div {
+    flex: 1 1 160px;
+    min-width: 0;
 }
 .perfumes-s img{
-    width: 65%;
-    margin-left: 40px;
-    
+    width: 100%;
+    display: block;
 }
 .perfumes-s button{
-    width: 65%;
-    margin-left: 40px;
+    width: 100%;
     background-color: rgb(10, 17, 146);
 }
 .sforu{
-    margin-left: 70px;
+    margin-left: 20px;
 }
 .end-s{
     display: flex;
-    gap: 200px;
-    padding: 40px;
+    flex-wrap: wrap;
+    gap: 30px;
+    padding: 40px 30px;
     background-color: rgb(201, 252, 252);
-    /* margin-left: 30px; */
     margin-top: 30px;
+}
+.end-s > div {
+    flex: 1 1 150px;
 }
 .old-price{
     text-decoration: line-through;
     color: gray;
+}
+
+/* ═══════════════════════════════
+   TABLET  (≤ 1023px)
+   ═══════════════════════════════ */
+@media (max-width: 1023px) {
+    .mainsec-s {
+        padding: 24px 24px;
+        gap: 24px;
+    }
+
+    .single1 {
+        width: 320px;
+    }
+
+    .writings h5 {
+        font-size: 24px;
+    }
+
+    .writings h3 {
+        font-size: 18px;
+    }
+
+    .buy-btn,
+    .cart-btn {
+        max-width: 340px;
+    }
+}
+
+/* ═══════════════════════════════
+   MOBILE  (≤ 767px)
+   ═══════════════════════════════ */
+@media (max-width: 767px) {
+    .navbar-s {
+        padding: 14px 16px;
+    }
+
+    .logo-s h2 {
+        font-size: 22px;
+    }
+
+    .mainsec-s {
+        flex-direction: column;
+        padding: 16px;
+        gap: 16px;
+    }
+
+    .threetogether {
+        flex-direction: row;
+        overflow-x: auto;
+    }
+
+    .threetogether img {
+        width: 80px;
+        padding: 10px;
+        flex-shrink: 0;
+    }
+
+    .single1 {
+        width: 100%;
+    }
+
+    .single1 img {
+        width: 90%;
+        margin: 0 auto;
+        display: block;
+    }
+
+    .left-side-s {
+        width: 100%;
+    }
+
+    .writings h3 {
+        font-size: 18px;
+    }
+
+    .writings h5 {
+        font-size: 22px;
+        margin: 12px 0;
+    }
+
+    .writings h6 {
+        font-size: 18px;
+    }
+
+    .writings p {
+        font-size: 15px;
+        line-height: 24px;
+    }
+
+    .btns-s {
+        align-items: stretch;
+        padding: 0;
+    }
+
+    .buy-btn,
+    .cart-btn {
+        max-width: 100%;
+        font-size: 16px;
+        height: 46px;
+    }
+
+    .perfumes-s {
+        padding: 12px;
+    }
+
+    .end-s {
+        padding: 24px 16px;
+        gap: 20px;
+    }
 }

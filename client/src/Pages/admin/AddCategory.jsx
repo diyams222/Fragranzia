@@ -1,9 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import "./AddCategory.css";
-import AdminNavBar from '../../components/admin/AdminNavBar';
-import AdminSidebar from '../../components/admin/AdminSidebar';
 import Category from "./Category";
 import axios from 'axios';
+import toast from 'react-hot-toast';
 
 const AddCategory = () => {
 
@@ -32,20 +31,13 @@ const AddCategory = () => {
         fetchCategories();
       } catch (error) {
         console.error("Error deleting category:", error);
-        alert("Failed to delete category");
+        toast.error("Failed to delete category");
       }
     }
   };
 
   return (
-    <>
-      <div className="category-layout">
-
-        <AdminNavBar />
-
-        <div className="category-main">
-
-          <AdminSidebar />
+    <div className="category-main">
 
           <div className="category-container">
 
@@ -147,10 +139,8 @@ const AddCategory = () => {
 
             </div>
 
-          </div>
         </div>
-      </div>
-    </>
+    </div>
   );
 };
 

@@ -6,8 +6,6 @@ import {
 } from "recharts";
 import { FiDollarSign, FiRefreshCw } from "react-icons/fi";
 import { FiShoppingBag, FiBox, FiUsers } from "react-icons/fi";
-import AdminNavBar from "../../components/admin/AdminNavBar";
-import AdminSidebar from "../../components/admin/AdminSidebar";
 import "./ShowPage.css";
 
 const COLORS = ["#4F8EF7", "#00b074", "#f59e0b", "#ef4444", "#8b5cf6"];
@@ -134,12 +132,8 @@ function ShowPage() {
   ];
 
   return (
-    <>
-      <AdminNavBar />
-      <div className="dash-layout">
-        <AdminSidebar />
-
-        <div className="dash-main">
+    <div className="dash-layout">
+      <div className="dash-main">
           {/* Header Row */}
           <div className="dash-header-row">
             <div>
@@ -241,9 +235,8 @@ function ShowPage() {
               )}
             </div>
           </div>
-        </div>
       </div>
-    </>
+    </div>
   );
 }
 

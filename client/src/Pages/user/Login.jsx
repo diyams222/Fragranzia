@@ -4,6 +4,7 @@ import "./Login.css";
 import axios from "axios";
 import perfume2 from "../../assets/perfume2.png";
 import { Link } from "react-router-dom";
+import toast from "react-hot-toast";
 
 
 function Login() {
@@ -14,7 +15,7 @@ function Login() {
 
   const handleLogin = async () => {
   if (!email || !password) {
-    alert("Please enter email and password.");
+    toast.error("Please enter email and password.");
     return;
   }
 
@@ -27,19 +28,21 @@ function Login() {
       }
     );
 
-   alert(res.data.message);
+   toast.success(res.data.message);
 
 // Save logged-in user
 localStorage.setItem("user", JSON.stringify(res.data.user));
 
 if (res.data.user.role === "admin") {
+  // Mark this tab as an active admin tab (tab-local, not shared to new tabs)
+  sessionStorage.setItem("adminTab", "true");
   navigate("/showpage");
 } else {
   navigate("/home");
 }
 
   } catch (error) {
-    alert(
+    toast.error(
       error.response?.data?.message || "Login Failed"
     );
   }

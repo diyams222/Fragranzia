@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
 import "./AdminCustomers.css";
+import toast from "react-hot-toast";
 
 function AdminCustomers() {
   const [users, setUsers] = useState([]);
@@ -35,7 +36,7 @@ function AdminCustomers() {
       }
     } catch (error) {
       console.error("Failed to toggle block:", error);
-      alert("Failed to update user status.");
+      toast.error("Failed to update user status.");
     }
   };
 

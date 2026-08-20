@@ -46,3 +46,17 @@
 }
 
 }
+
+@media(max-width:480px){
+    .footer{
+        padding:28px 16px;
+        gap:24px;
+    }
+    .footer-logo h2{
+        font-size:26px;
+    }
+    .footer-links{
+        gap:24px;
+        flex-wrap:wrap;
+    }
+}

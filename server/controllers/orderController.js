@@ -1,4 +1,5 @@
 const Order = require("../models/Order");
+const Product = require("../models/Product");
 
 // Place a new order
 const placeOrder = async (req, res) => {
@@ -18,6 +19,15 @@ const placeOrder = async (req, res) => {
     });
 
     await order.save();
+
+    // Decrement each product's stock quantity by the ordered amount
+    await Promise.all(
+      items.map((item) =>
+        Product.findByIdAndUpdate(item.product, {
+          $inc: { quantity: -item.quantity },
+        })
+      )
+    );
 
     res.status(201).json({ message: "Order placed successfully!", order });
   } catch (error) {
@@ -165,6 +175,18 @@ const handleReturn = async (req, res) => {
 
     if (action === "approve") {
       order.status = "Returned";
+
+      // Restore stock for each item whose return reason is NOT "Damaged"
+      const DAMAGED_REASON = "Damaged";
+      await Promise.all(
+        order.items.map((item) => {
+          const reason = item.itemReturnRequest?.reason || order.returnRequest?.reason || "";
+          if (reason === DAMAGED_REASON) return Promise.resolve(); // damaged — do NOT restore
+          return Product.findByIdAndUpdate(item.product, {
+            $inc: { quantity: item.quantity },
+          });
+        })
+      );
     } else if (action === "reject") {
       order.status = "Delivered"; // revert back to delivered
     } else {
@@ -182,6 +204,133 @@ const handleReturn = async (req, res) => {
     res.status(500).json({ message: "Failed to handle return." });
   }
 };
+// Cancel a single item within an order (user)
+const cancelOrderItem = async (req, res) => {
+  try {
+    const { orderId, itemIndex } = req.params;
+    const { userId } = req.body;
+    const idx = parseInt(itemIndex, 10);
+
+    const order = await Order.findById(orderId);
+    if (!order) return res.status(404).json({ message: "Order not found." });
+    if (order.user.toString() !== userId) return res.status(403).json({ message: "Unauthorized." });
+
+    const item = order.items[idx];
+    if (!item) return res.status(404).json({ message: "Item not found." });
+
+    // Treat missing itemStatus (orders created before per-item tracking) as 'Pending'
+    const currentStatus = item.itemStatus || 'Pending';
+    if (!['Pending', 'Processing'].includes(currentStatus)) {
+      return res.status(400).json({ message: `Item cannot be cancelled. Current status: ${currentStatus}.` });
+    }
+
+    // Mark this item as cancelled immediately — no admin confirmation required
+    order.items[idx].itemStatus = 'Cancelled';
+    order.items[idx].cancelledAt = new Date();
+    order.markModified('items');
+
+    // Derive the overall order status from the updated item statuses so that
+    // the admin table always reflects the most meaningful state.
+    const updatedStatuses = order.items.map((itm, i) =>
+      i === idx ? 'Cancelled' : (itm.itemStatus || 'Pending')
+    );
+
+    const allCancelled = updatedStatuses.every((s) => s === 'Cancelled');
+    if (allCancelled) {
+      order.status = 'Cancelled';
+    } else {
+      // Pick the most-advanced non-cancelled status so the admin sees the right state
+      const priority = ['Returned', 'Return Requested', 'Delivered', 'Shipped', 'Processing', 'Pending'];
+      const activeStatuses = updatedStatuses.filter((s) => s !== 'Cancelled');
+      const derived = priority.find((p) => activeStatuses.includes(p)) || 'Pending';
+      order.status = derived;
+    }
+
+    await order.save();
+
+    // Return a fresh document so the client always gets up-to-date data
+    const freshOrder = await Order.findById(orderId);
+    res.status(200).json({ message: "Item cancelled successfully.", order: freshOrder });
+  } catch (error) {
+    console.error("Cancel item error:", error);
+    res.status(500).json({ message: "Failed to cancel item." });
+  }
+};
+
+// Request return for a single item (user)
+const requestItemReturn = async (req, res) => {
+  try {
+    const { orderId, itemIndex } = req.params;
+    const { userId, reason } = req.body;
+    const idx = parseInt(itemIndex, 10);
+
+    const order = await Order.findById(orderId);
+    if (!order) return res.status(404).json({ message: "Order not found." });
+    if (order.user.toString() !== userId) return res.status(403).json({ message: "Unauthorized." });
+
+    const item = order.items[idx];
+    if (!item) return res.status(404).json({ message: "Item not found." });
+
+    // Treat missing itemStatus (old orders) as 'Pending'
+    const currentStatus = item.itemStatus || 'Pending';
+    if (currentStatus !== 'Delivered') {
+      return res.status(400).json({ message: "Return can only be requested for delivered items." });
+    }
+
+    order.items[idx].itemStatus = 'Return Requested';
+    order.items[idx].itemReturnRequest = {
+      reason: reason || 'No reason provided.',
+      requestedAt: new Date(),
+      adminNote: '',
+    };
+    order.markModified('items');
+    await order.save();
+
+    const freshOrder = await Order.findById(orderId);
+    res.status(200).json({ message: "Return requested successfully.", order: freshOrder });
+  } catch (error) {
+    console.error("Request item return error:", error);
+    res.status(500).json({ message: "Failed to request return." });
+  }
+};
+
+// Admin: update status of a single item
+const updateItemStatus = async (req, res) => {
+  try {
+    const { orderId, itemIndex } = req.params;
+    const { status } = req.body;
+    const idx = parseInt(itemIndex, 10);
+
+    const order = await Order.findById(orderId);
+    if (!order) return res.status(404).json({ message: "Order not found." });
+
+    if (!order.items[idx]) return res.status(404).json({ message: "Item not found." });
+
+    const previousStatus = order.items[idx].itemStatus || 'Pending';
+    order.items[idx].itemStatus = status;
+    order.markModified('items');
+    await order.save();
+
+    // When admin marks a per-item return as approved (Returned), restore stock
+    // ONLY if the return reason is NOT "Damaged".
+    if (status === 'Returned' && previousStatus !== 'Returned') {
+      const DAMAGED_REASON = 'Damaged';
+      const item = order.items[idx];
+      const reason = item.itemReturnRequest?.reason || '';
+      if (reason !== DAMAGED_REASON) {
+        await Product.findByIdAndUpdate(item.product, {
+          $inc: { quantity: item.quantity },
+        });
+      }
+    }
+
+    res.status(200).json({ message: "Item status updated.", order });
+  } catch (error) {
+    console.error("Update item status error:", error);
+    res.status(500).json({ message: "Failed to update item status." });
+  }
+};
+
 
 module.exports = {
   placeOrder,
@@ -192,4 +341,7 @@ module.exports = {
   cancelOrder,
   requestReturn,
   handleReturn,
+  cancelOrderItem,
+  requestItemReturn,
+  updateItemStatus,
 };

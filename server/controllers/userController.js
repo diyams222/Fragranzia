@@ -44,7 +44,42 @@ const login = async (req, res) => {
       return res.status(400).json({ message: "Invalid email or password" });
     }
 
+    // Admin accounts must use the admin login flow — block them here
+    if (user.role !== "user") {
+      return res.status(403).json({ message: "Admin accounts cannot log in through the user login." });
+    }
+
     res.status(200).json({ message: "Login Successful", user });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
+// Admin-only login — rejects non-admin credentials
+const adminLogin = async (req, res) => {
+  try {
+    const { email, password } = req.body;
+
+    if (!email || !password) {
+      return res.status(400).json({ message: "Please enter email and password" });
+    }
+
+    const user = await User.findOne({ email });
+    if (!user) {
+      return res.status(400).json({ message: "Invalid email or password" });
+    }
+
+    const isMatch = await bcrypt.compare(password, user.password);
+    if (!isMatch) {
+      return res.status(400).json({ message: "Invalid email or password" });
+    }
+
+    // Only admin accounts may use this endpoint
+    if (user.role !== "admin") {
+      return res.status(403).json({ message: "Access denied. Admin credentials required." });
+    }
+
+    res.status(200).json({ message: "Admin Login Successful", user });
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
@@ -365,6 +400,7 @@ const toggleBlockUser = async (req, res) => {
 module.exports = {
   signup,
   login,
+  adminLogin,
   updateProfile,
   saveAddress,
   getAddresses,

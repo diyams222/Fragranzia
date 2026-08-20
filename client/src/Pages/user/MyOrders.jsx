@@ -3,20 +3,27 @@ import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import Navbar from "../../components/user/Navbar";
 import "./MyOrders.css";
+import toast from "react-hot-toast";
+
+const RETURN_REASONS = ["Damaged", "Wrong product received"];
 
 function MyOrders() {
   const navigate = useNavigate();
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);
-  // returnForm: { orderId, reason } — tracks which order's return form is open
+
+  // returnForm: { orderId, itemIndex, reason } — tracks which item's return dropdown is open
   const [returnForm, setReturnForm] = useState(null);
   const [returning, setReturning] = useState(false);
+
+  // cancellingItem: "orderId-itemIndex" string while a cancel request is in-flight
+  const [cancellingItem, setCancellingItem] = useState(null);
 
   const user = JSON.parse(localStorage.getItem("user"));
 
   useEffect(() => {
     if (!user) {
-      alert("Please login first!");
+      toast.error("Please login first!");
       navigate("/login");
       return;
     }
@@ -49,51 +56,75 @@ function MyOrders() {
     return map[status] || "#888";
   };
 
-  const handleCancelOrder = async (orderId) => {
+  /**
+   * Derives the order-header display status from per-item statuses.
+   * - Shows "Cancelled" ONLY when every item is cancelled.
+   * - Otherwise falls back to the admin-set order.status.
+   */
+  const getOrderDisplayStatus = (order) => {
+    const itemStatuses = order.items.map((item) => item.itemStatus || "Pending");
+    const allCancelled = itemStatuses.every((s) => s === "Cancelled");
+    if (allCancelled) return "Cancelled";
+    // If the admin hasn't changed the overall status to something misleading,
+    // keep it. But if it says Cancelled while not all items are cancelled, show
+    // the most-advanced non-cancelled status instead.
+    if (order.status === "Cancelled" && !allCancelled) {
+      // Derive from items: pick the "most advanced" active status
+      const priority = ["Returned", "Return Requested", "Delivered", "Shipped", "Processing", "Pending"];
+      for (const p of priority) {
+        if (itemStatuses.includes(p)) return p;
+      }
+    }
+    return order.status;
+  };
+
+  // ── Per-item cancel ───────────────────────────────────────────
+  const handleCancelItem = async (orderId, itemIndex) => {
     const confirmed = window.confirm(
-      "Are you sure you want to cancel this order? This cannot be undone."
+      "Are you sure you want to cancel this item? This cannot be undone."
     );
     if (!confirmed) return;
 
+    const key = `${orderId}-${itemIndex}`;
+    setCancellingItem(key);
     try {
-      await axios.patch(
-        `http://localhost:5000/api/orders/${orderId}/cancel`,
+      const res = await axios.patch(
+        `http://localhost:5000/api/orders/${orderId}/items/${itemIndex}/cancel`,
         { userId: user._id }
       );
+      // Replace the updated order in state
       setOrders((prev) =>
-        prev.map((o) =>
-          o._id === orderId ? { ...o, status: "Cancelled" } : o
-        )
+        prev.map((o) => (o._id === orderId ? res.data.order : o))
       );
+      toast.success("Item cancelled successfully.");
     } catch (error) {
-      const msg = error.response?.data?.message || "Failed to cancel order.";
-      alert(msg);
+      const msg = error.response?.data?.message || "Failed to cancel item.";
+      toast.error(msg);
+    } finally {
+      setCancellingItem(null);
     }
   };
 
-  const handleReturnSubmit = async (orderId) => {
-    const reason = returnForm?.reason?.trim();
-    if (!reason) {
-      alert("Please provide a reason for the return.");
+  // ── Per-item return ───────────────────────────────────────────
+  const handleReturnSubmit = async () => {
+    if (!returnForm?.reason) {
+      toast.error("Please select a return reason.");
       return;
     }
     setReturning(true);
     try {
       const res = await axios.patch(
-        `http://localhost:5000/api/orders/${orderId}/return`,
-        { userId: user._id, reason }
+        `http://localhost:5000/api/orders/${returnForm.orderId}/items/${returnForm.itemIndex}/return`,
+        { userId: user._id, reason: returnForm.reason }
       );
       setOrders((prev) =>
-        prev.map((o) =>
-          o._id === orderId
-            ? { ...o, status: "Return Requested", returnRequest: res.data.order.returnRequest }
-            : o
-        )
+        prev.map((o) => (o._id === returnForm.orderId ? res.data.order : o))
       );
       setReturnForm(null);
+      toast.success("Return requested successfully.");
     } catch (error) {
       const msg = error.response?.data?.message || "Failed to request return.";
-      alert(msg);
+      toast.error(msg);
     } finally {
       setReturning(false);
     }
@@ -128,6 +159,8 @@ function MyOrders() {
           ) : (
             orders.map((order) => (
               <div className="order-card" key={order._id}>
+
+              {/* ── Order header ── */}
                 <div className="order-card-header">
                   <div>
                     <span className="order-id">
@@ -141,111 +174,156 @@ function MyOrders() {
                       })}
                     </span>
                   </div>
+                  {/* Show overall derived status — no Cancel button at order level */}
                   <span
                     className="order-status"
-                    style={{ background: statusColor(order.status) }}
+                    style={{ background: statusColor(getOrderDisplayStatus(order)) }}
                   >
-                    {order.status}
+                    {getOrderDisplayStatus(order)}
                   </span>
                 </div>
 
+                {/* ── Items list ── */}
                 <div className="order-items">
-                  {order.items.map((item, i) => (
-                    <div className="order-item-row" key={i}>
-                      {item.image && (
-                        <img
-                          src={`http://localhost:5000/uploads/${item.image}`}
-                          alt={item.title}
-                          className="order-item-img"
-                        />
-                      )}
-                      <div className="order-item-info">
-                        <p className="order-item-title">{item.title}</p>
-                        <p className="order-item-meta">
-                          Qty: {item.quantity} &nbsp;|&nbsp; &#8377;{item.salePrice}
-                        </p>
+                  {order.items.map((item, i) => {
+                    const iStatus = item.itemStatus || "Pending";
+                    const isReturnFormOpen =
+                      returnForm?.orderId === order._id &&
+                      returnForm?.itemIndex === i;
+
+                    return (
+                      <div key={i}>
+                        <div className="order-item-row">
+                          {item.image && (
+                            <img
+                              src={`http://localhost:5000/uploads/${item.image}`}
+                              alt={item.title}
+                              className="order-item-img"
+                            />
+                          )}
+
+                          <div className="order-item-info" style={{ flex: 1 }}>
+                            <p className="order-item-title">{item.title}</p>
+                            <p className="order-item-meta">
+                              Qty: {item.quantity}&nbsp;|&nbsp;&#8377;{item.salePrice}
+                            </p>
+                          </div>
+
+                          {/* Per-item status badge */}
+                          <span
+                            className="order-status"
+                            style={{
+                              background: statusColor(iStatus),
+                              fontSize: "12px",
+                              padding: "4px 10px",
+                              flexShrink: 0,
+                            }}
+                          >
+                            {iStatus}
+                          </span>
+
+                          {/* Per-item action buttons */}
+                          <div style={{ display: "flex", gap: "8px", flexShrink: 0 }}>
+                            {/* Cancel — only when Pending or Processing, shown per-item only */}
+                            {["Pending", "Processing"].includes(iStatus) && (() => {
+                              const key = `${order._id}-${i}`;
+                              const isCancelling = cancellingItem === key;
+                              return (
+                                <button
+                                  className="cancel-order-btn"
+                                  onClick={() => handleCancelItem(order._id, i)}
+                                  disabled={isCancelling}
+                                  style={isCancelling ? { opacity: 0.6, cursor: "not-allowed" } : {}}
+                                >
+                                  {isCancelling ? "Cancelling…" : "Cancel"}
+                                </button>
+                              );
+                            })()}
+
+                            {/* Return — only when Delivered, dropdown not open */}
+                            {iStatus === "Delivered" && !isReturnFormOpen && (
+                              <button
+                                className="return-order-btn"
+                                onClick={() =>
+                                  setReturnForm({
+                                    orderId: order._id,
+                                    itemIndex: i,
+                                    reason: "",
+                                  })
+                                }
+                              >
+                                Return
+                              </button>
+                            )}
+                          </div>
+                        </div>
+
+                        {/* Return reason display (after return requested) */}
+                        {["Return Requested", "Returned"].includes(iStatus) &&
+                          item.itemReturnRequest?.reason && (
+                            <div className="return-info-box" style={{ margin: "6px 0 0 78px" }}>
+                              <p className="return-info-label">&#128260; Return Reason:</p>
+                              <p className="return-info-reason">
+                                {item.itemReturnRequest.reason}
+                              </p>
+                              {item.itemReturnRequest?.adminNote && (
+                                <p className="return-admin-note">
+                                  &#128203; Admin Note: {item.itemReturnRequest.adminNote}
+                                </p>
+                              )}
+                            </div>
+                          )}
+
+                        {/* Return reason dropdown — shown inline below the item */}
+                        {isReturnFormOpen && (
+                          <div className="return-form-panel" style={{ margin: "8px 0 0 78px" }}>
+                            <p className="return-form-label">Why do you want to return this item?</p>
+                            <select
+                              className="return-reason-input"
+                              style={{ height: "42px", cursor: "pointer" }}
+                              value={returnForm.reason}
+                              onChange={(e) =>
+                                setReturnForm((prev) => ({ ...prev, reason: e.target.value }))
+                              }
+                            >
+                              <option value="">-- Select a reason --</option>
+                              {RETURN_REASONS.map((r) => (
+                                <option key={r} value={r}>{r}</option>
+                              ))}
+                            </select>
+                            <div className="return-form-actions">
+                              <button
+                                className="return-submit-btn"
+                                onClick={handleReturnSubmit}
+                                disabled={returning}
+                              >
+                                {returning ? "Submitting..." : "Submit Return"}
+                              </button>
+                              <button
+                                className="return-cancel-form-btn"
+                                onClick={() => setReturnForm(null)}
+                                disabled={returning}
+                              >
+                                Cancel
+                              </button>
+                            </div>
+                          </div>
+                        )}
                       </div>
-                    </div>
-                  ))}
+                    );
+                  })}
                 </div>
 
-                {/* Return reason + admin note display */}
-                {["Return Requested", "Returned"].includes(order.status) &&
-                  order.returnRequest?.reason && (
-                    <div className="return-info-box">
-                      <p className="return-info-label">&#128260; Return Reason:</p>
-                      <p className="return-info-reason">{order.returnRequest.reason}</p>
-                      {order.returnRequest?.adminNote && (
-                        <p className="return-admin-note">
-                          &#128203; Admin Note: {order.returnRequest.adminNote}
-                        </p>
-                      )}
-                    </div>
-                  )}
-
-                {/* Inline return form */}
-                {returnForm?.orderId === order._id && (
-                  <div className="return-form-panel">
-                    <p className="return-form-label">Why do you want to return this order?</p>
-                    <textarea
-                      className="return-reason-input"
-                      placeholder="e.g. Wrong item received, damaged product..."
-                      rows={3}
-                      value={returnForm.reason}
-                      onChange={(e) =>
-                        setReturnForm((prev) => ({ ...prev, reason: e.target.value }))
-                      }
-                    />
-                    <div className="return-form-actions">
-                      <button
-                        className="return-submit-btn"
-                        onClick={() => handleReturnSubmit(order._id)}
-                        disabled={returning}
-                      >
-                        {returning ? "Submitting..." : "Submit Return"}
-                      </button>
-                      <button
-                        className="return-cancel-form-btn"
-                        onClick={() => setReturnForm(null)}
-                        disabled={returning}
-                      >
-                        Cancel
-                      </button>
-                    </div>
-                  </div>
-                )}
-
+                {/* ── Order footer (payment + total) ── */}
                 <div className="order-card-footer">
                   <span className="order-payment">{order.paymentMethod}</span>
                   <div className="order-footer-right">
                     <span className="order-total">
                       Total: <strong>&#8377;{order.totalAmount}</strong>
                     </span>
-
-                    {/* Cancel — Pending / Processing only */}
-                    {["Pending", "Processing"].includes(order.status) && (
-                      <button
-                        className="cancel-order-btn"
-                        onClick={() => handleCancelOrder(order._id)}
-                      >
-                        Cancel Order
-                      </button>
-                    )}
-
-                    {/* Return — Delivered only, hide while form is open */}
-                    {order.status === "Delivered" &&
-                      returnForm?.orderId !== order._id && (
-                        <button
-                          className="return-order-btn"
-                          onClick={() =>
-                            setReturnForm({ orderId: order._id, reason: "" })
-                          }
-                        >
-                          Return Order
-                        </button>
-                      )}
                   </div>
                 </div>
+
               </div>
             ))
           )}

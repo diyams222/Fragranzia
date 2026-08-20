@@ -3,6 +3,7 @@ import { useState, useEffect } from "react";
 import axios from "axios";
 import Navbar from "../../components/user/Navbar";
 import "./Checkout.css";
+import toast from "react-hot-toast";
 
 function Checkout() {
   const location = useLocation();
@@ -361,7 +362,7 @@ function Checkout() {
       setShowSuccess(true);
     } catch (error) {
       console.error(error);
-      alert("Failed to place order. Please try again.");
+      toast.error("Failed to place order. Please try again.");
     }
   }}
 >

@@ -15,7 +15,7 @@ const AdminSidebar = () => {
 
   const links = [
     { label: "Dashboard",  icon: <FaThLarge />,      path: "/showpage"     },
-    { label: "Products",   icon: <FaBox />,           path: "/addproduct"  },
+    { label: "Products",   icon: <FaBox />,           path: "/products"    },
     { label: "Categories", icon: <FaTags />,           path: "/addcategory"  },
     { label: "Customers",  icon: <FaUsers />,          path: "/customers"    },
     { label: "Orders",     icon: <FaClipboardList />,  path: "/adminorders"  },
@@ -41,7 +41,14 @@ const AdminSidebar = () => {
       </nav>
 
       <div className="asb-btn">
-        <button className="logout-sidebar-btn" onClick={() => navigate("/login")}>
+        <button
+  className="logout-sidebar-btn"
+  onClick={() => {
+    localStorage.removeItem("user");
+    sessionStorage.removeItem("adminTab");
+    navigate("/admin-login");
+  }}
+>
           <FaSignOutAlt /> Log Out
         </button>
       </div>

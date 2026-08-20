@@ -1,8 +1,6 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
-import AdminNavBar from "../../components/admin/AdminNavBar";
-import AdminSidebar from "../../components/admin/AdminSidebar";
 import "./AddProduct.css";
 
 const ITEMS_PER_PAGE = 8;
@@ -67,12 +65,8 @@ function AddProduct() {
   const paginated  = filtered.slice((page - 1) * ITEMS_PER_PAGE, page * ITEMS_PER_PAGE);
 
   return (
-    <>
-      <AdminNavBar />
-      <div className="adp-layout">
-        <AdminSidebar />
-
-        <div className="adp-main">
+    <div className="adp-layout">
+      <div className="adp-main">
 
           {/* Top action row */}
           <div className="adp-top-row">
@@ -174,7 +168,7 @@ function AddProduct() {
                       </td>
                       <td className="adp-actions">
                         <button className="adp-edit-btn"
-                          onClick={() => navigate(`/products?edit=${p._id}`)}>
+                          onClick={() => navigate(`/addproduct?edit=${p._id}`)}>
                           Edit
                         </button>
                         <button className="adp-del-btn"
@@ -208,9 +202,8 @@ function AddProduct() {
             </button>
           </div>
 
-        </div>
       </div>
-    </>
+    </div>
   );
 }
 

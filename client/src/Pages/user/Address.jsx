@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import "./Address.css";
 import Navbar from "../../components/user/Navbar";
 import axios from "axios";
+import toast from "react-hot-toast";
 
 function Address() {
   const navigate = useNavigate();
@@ -59,13 +60,13 @@ const handleSave = async () => {
       }
     );
 
-    alert("Address Saved Successfully");
+    toast.success("Address Saved Successfully");
     fetchAddresses();
     setShowAddressForm(false);
 
   } catch (error) {
     console.log(error);
-    alert("Failed to save address");
+    toast.error("Failed to save address");
   }
 };
 
@@ -77,13 +78,13 @@ const handleDelete = async (addressId) => {
       `http://localhost:5000/api/users/address/${user._id}/${addressId}`
     );
 
-    alert("Address deleted successfully");
+    toast.success("Address deleted successfully");
 
     fetchAddresses();
 
   } catch (error) {
     console.log(error);
-    alert("Failed to delete address");
+    toast.error("Failed to delete address");
   }
 };
 
@@ -95,13 +96,13 @@ const handleSetPrimary = async (addressId) => {
       `http://localhost:5000/api/users/address/${user._id}/primary/${addressId}`
     );
 
-    alert("Primary address updated");
+    toast.success("Primary address updated");
 
     fetchAddresses();
 
   } catch (error) {
     console.log(error);
-    alert("Failed to update primary address");
+    toast.error("Failed to update primary address");
   }
 };
 

@@ -3,22 +3,19 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  height: 100vh;
-  margin-left: 70px;
+  min-height: 100vh;
+  padding: 20px;
+  box-sizing: border-box;
 }
 .first-sec{
-  /* gap: 90px; */
-  padding: 150px;
   display: flex;
-  width: 1100px;
-  /* height: 450px; */
+  width: 100%;
+  max-width: 1100px;
   border-radius: 2px;
-  /* overflow: hidden; */
-  /* box-shadow: 0 0px 20px 0px rgba(0,0,0,0.1); */
 }
 .left{
   position: relative;
-  width: 70%;
+  width: 50%;
   padding: 15px;
 }
 .left img{
@@ -35,10 +32,11 @@
   color: white;
 }
 .signup{
-  width: 70%;
+  width: 50%;
   padding: 40px;
   display: flex;
   flex-direction: column;
+  justify-content: center;
 }
 .signup input{
   padding: 10px;
@@ -52,4 +50,29 @@
   background: #142a55;
   border: none;
   border-radius: 6px;
+  cursor: pointer;
+}
+
+/* ═══════════════════════════════
+   TABLET  (≤ 767px)
+   ═══════════════════════════════ */
+@media (max-width: 767px) {
+  .first-main {
+    align-items: flex-start;
+    padding: 16px;
+  }
+
+  .first-sec {
+    flex-direction: column;
+    max-width: 100%;
+  }
+
+  .left {
+    display: none; /* hide illustration on mobile */
+  }
+
+  .signup {
+    width: 100%;
+    padding: 24px 16px;
+  }
 }

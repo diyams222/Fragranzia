@@ -4,6 +4,7 @@ import { FaHeart, FaTrash } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 import Navbar from "../../components/user/Navbar";
 import "./Wishlist.css";
+import toast from "react-hot-toast";
 
 function Wishlist() {
   const [wishlistItems, setWishlistItems] = useState([]);
@@ -14,7 +15,7 @@ function Wishlist() {
 
   useEffect(() => {
     if (!user) {
-      alert("Please login first!");
+      toast.error("Please login first!");
       navigate("/login");
       return;
     }
@@ -45,7 +46,7 @@ function Wishlist() {
       );
     } catch (error) {
       console.error("Failed to remove from wishlist:", error);
-      alert("Failed to remove item from wishlist.");
+      toast.error("Failed to remove item from wishlist.");
     }
   };
 
@@ -55,10 +56,10 @@ function Wishlist() {
         userId: user._id,
         productId,
       });
-      alert(res.data.message);
+      toast.success(res.data.message);
     } catch (error) {
       console.error(error);
-      alert("Failed to add product to cart.");
+      toast.error("Failed to add product to cart.");
     }
   };
 

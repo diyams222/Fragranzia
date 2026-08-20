@@ -16,16 +16,18 @@
 
 .profile-tabs {
   display: flex;
-  gap: 15px;
+  flex-wrap: wrap;
+  gap: 10px;
   margin-bottom: 30px;
 }
 
 .profile-tabs button {
-  padding: 10px 30px;
+  padding: 10px 20px;
   border: 1px solid #ddd;
   background: #fff;
   border-radius: 5px;
   cursor: pointer;
+  white-space: nowrap;
 }
 
 .profile-tabs .active {
@@ -67,6 +69,8 @@
   padding: 14px 20px;
   background: #f9fafb;
   border-bottom: 1px solid #e5e7eb;
+  flex-wrap: wrap;
+  gap: 8px;
 }
 
 .order-id {
@@ -74,6 +78,7 @@
   font-size: 14px;
   color: #1f2937;
   margin-right: 14px;
+  word-break: break-all;
 }
 
 .order-date {
@@ -87,6 +92,7 @@
   color: white;
   font-size: 13px;
   font-weight: 600;
+  white-space: nowrap;
 }
 
 .order-items {
@@ -100,6 +106,7 @@
   display: flex;
   align-items: center;
   gap: 14px;
+  flex-wrap: wrap;
 }
 
 .order-item-img {
@@ -108,6 +115,7 @@
   object-fit: cover;
   border-radius: 8px;
   border: 1px solid #e5e7eb;
+  flex-shrink: 0;
 }
 
 .order-item-title {
@@ -132,6 +140,8 @@
   border-top: 1px solid #e5e7eb;
   font-size: 14px;
   color: #374151;
+  flex-wrap: wrap;
+  gap: 10px;
 }
 
 .order-total strong {
@@ -143,7 +153,8 @@
 .order-footer-right {
   display: flex;
   align-items: center;
-  gap: 16px;
+  gap: 10px;
+  flex-wrap: wrap;
 }
 
 /* Cancel order button */
@@ -157,6 +168,7 @@
   font-weight: 600;
   cursor: pointer;
   transition: background 0.2s, color 0.2s;
+  white-space: nowrap;
 }
 
 .cancel-order-btn:hover {
@@ -175,6 +187,7 @@
   font-weight: 600;
   cursor: pointer;
   transition: background 0.2s, color 0.2s;
+  white-space: nowrap;
 }
 
 .return-order-btn:hover {
@@ -219,6 +232,7 @@
   display: flex;
   gap: 12px;
   margin-top: 12px;
+  flex-wrap: wrap;
 }
 
 .return-submit-btn {
@@ -284,4 +298,62 @@
   color: #6b7280;
   margin: 0;
   font-style: italic;
+}
+
+/* ═══════════════════════════════
+   TABLET  (≤ 1023px)
+   ═══════════════════════════════ */
+@media (max-width: 1023px) {
+  .orders-page {
+    margin: 24px auto;
+    padding: 16px;
+  }
+
+  .orders-page h1 {
+    font-size: 30px;
+  }
+}
+
+/* ═══════════════════════════════
+   MOBILE  (≤ 767px)
+   ═══════════════════════════════ */
+@media (max-width: 767px) {
+  .orders-page {
+    margin: 12px auto;
+    padding: 12px;
+  }
+
+  .orders-page h1 {
+    font-size: 24px;
+  }
+
+  .profile-tabs button {
+    padding: 8px 14px;
+    font-size: 13px;
+    flex: 1;
+  }
+
+  .order-card-header {
+    padding: 12px;
+  }
+
+  .order-id {
+    font-size: 12px;
+    margin-right: 0;
+  }
+
+  .order-items {
+    padding: 12px;
+  }
+
+  .order-card-footer {
+    padding: 10px 12px;
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .order-footer-right {
+    width: 100%;
+    justify-content: flex-end;
+  }
 }

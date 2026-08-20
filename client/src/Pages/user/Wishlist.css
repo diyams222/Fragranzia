@@ -40,8 +40,8 @@
 /* ---- Grid ---- */
 .wishlist-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
-  gap: 30px;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: 24px;
   padding: 40px 48px;
   max-width: 1300px;
   margin: 0 auto;
@@ -108,6 +108,7 @@
   align-items: center;
   gap: 10px;
   margin-top: 4px;
+  flex-wrap: wrap;
 }
 
 .wl-sale-price {
@@ -181,7 +182,7 @@
   gap: 18px;
   color: #aaa;
   text-align: center;
-  padding: 40px;
+  padding: 40px 20px;
 }
 
 .wishlist-empty .empty-heart {
@@ -229,4 +230,41 @@
   min-height: 50vh;
   font-size: 16px;
   color: #888;
+}
+
+/* ═══════════════════════════════
+   TABLET  (≤ 1023px)
+   ═══════════════════════════════ */
+@media (max-width: 1023px) {
+  .wishlist-header {
+    padding: 24px 28px 14px;
+  }
+
+  .wishlist-grid {
+    padding: 28px 28px;
+    gap: 20px;
+  }
+}
+
+/* ═══════════════════════════════
+   MOBILE  (≤ 767px)
+   ═══════════════════════════════ */
+@media (max-width: 767px) {
+  .wishlist-header {
+    padding: 16px 16px 12px;
+  }
+
+  .wishlist-header h1 {
+    font-size: 22px;
+  }
+
+  .wishlist-grid {
+    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+    padding: 16px;
+    gap: 14px;
+  }
+
+  .wl-img-wrap {
+    height: 170px;
+  }
 }

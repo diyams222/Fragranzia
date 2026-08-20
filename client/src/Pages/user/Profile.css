@@ -16,16 +16,18 @@
 
 .tabs {
   display: flex;
-  gap: 15px;
+  flex-wrap: wrap;
+  gap: 10px;
   margin-bottom: 30px;
 }
 
 .tabs button {
-  padding: 10px 30px;
+  padding: 10px 20px;
   border: 1px solid #ddd;
   background: #fff;
   border-radius: 5px;
   cursor: pointer;
+  white-space: nowrap;
 }
 
 .tabs .active {
@@ -119,8 +121,31 @@
   border-color: #1f2937;
 }
 
+@media (max-width: 1023px) {
+  .profile-form {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
 @media (max-width: 768px) {
+  .profile-container {
+    padding: 12px;
+  }
+
+  .profile-container h1 {
+    font-size: 28px;
+  }
+
   .profile-form {
     grid-template-columns: 1fr;
+  }
+
+  .tabs button {
+    flex: 1;
+  }
+
+  .profile-actions {
+    flex-wrap: wrap;
+    justify-content: center;
   }
 }
