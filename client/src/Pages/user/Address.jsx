@@ -4,6 +4,7 @@ import "./Address.css";
 import Navbar from "../../components/user/Navbar";
 import axios from "axios";
 import toast from "react-hot-toast";
+import { getUser } from "../../utils/authStorage";
 
 function Address() {
   const navigate = useNavigate();
@@ -22,7 +23,7 @@ const [addresses, setAddresses] = useState([]);
 
 const fetchAddresses = async () => {
   try {
-    const user = JSON.parse(localStorage.getItem("user"));
+    const user = getUser();
 
     const res = await axios.get(
       `http://localhost:5000/api/users/address/${user._id}`
@@ -43,7 +44,7 @@ useEffect(() => {
 
 const handleSave = async () => {
   try {
-    const user = JSON.parse(localStorage.getItem("user"));
+    const user = getUser();
 
     await axios.put(
       `http://localhost:5000/api/users/address/${user._id}`,
@@ -72,7 +73,7 @@ const handleSave = async () => {
 
 const handleDelete = async (addressId) => {
   try {
-    const user = JSON.parse(localStorage.getItem("user"));
+    const user = getUser();
 
     await axios.delete(
       `http://localhost:5000/api/users/address/${user._id}/${addressId}`
@@ -90,7 +91,7 @@ const handleDelete = async (addressId) => {
 
 const handleSetPrimary = async (addressId) => {
   try {
-    const user = JSON.parse(localStorage.getItem("user"));
+    const user = getUser();
 
     await axios.put(
       `http://localhost:5000/api/users/address/${user._id}/primary/${addressId}`

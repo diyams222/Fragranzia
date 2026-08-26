@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import axios from "axios";
 import "./AdminOrders.css";
 import toast from "react-hot-toast";
+import { getImageUrl } from "../../utils/imageUrl";
 
 function AdminOrders() {
   const [orders, setOrders] = useState([]);
@@ -228,7 +229,7 @@ function AdminOrders() {
                     <div style={{ display: "flex", gap: 12, alignItems: "center", width: "100%" }}>
                       {item.image && (
                         <img
-                          src={`http://localhost:5000/uploads/${item.image}`}
+                          src={getImageUrl(item.image)}
                           alt={item.title}
                         />
                       )}

@@ -1,10 +1,11 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import "./Signup.css";
 import perfume from "../../assets/perfume.png";
 import { Link } from "react-router-dom";
 import toast from "react-hot-toast";
+import { getUser, getAdminUser, setUserSession } from "../../utils/authStorage";
 
 function Signup() {
   const navigate = useNavigate();
@@ -13,6 +14,15 @@ function Signup() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
+
+  // If already logged in, redirect to Home
+  useEffect(() => {
+    const admin = getAdminUser();
+    const user = getUser();
+    if (admin || user) {
+      navigate("/home", { replace: true });
+    }
+  }, [navigate]);
 
   const handleSignup = async () => {
     if (!name || !email || !password || !confirmPassword) {
@@ -37,8 +47,8 @@ function Signup() {
 
       toast.success(res.data.message);
 
-      // Save newly registered user
-      localStorage.setItem("user", JSON.stringify(res.data.user));
+      // Save user session
+      setUserSession(res.data.user);
 
       // Clear form
       setName("");

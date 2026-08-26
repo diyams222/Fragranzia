@@ -1,25 +1,23 @@
 import React from "react";
 import { Navigate, Outlet } from "react-router-dom";
+import { getUser, getAdminUser } from "../../utils/authStorage";
 
 const UserProtectedRoute = () => {
-  const user = JSON.parse(localStorage.getItem("user"));
+  const user = getUser();
+  const adminUser = getAdminUser();
 
-  // No session — send to user login
-  if (!user) {
-    return <Navigate to="/login" replace />;
+  // User → Allow user protected pages
+  if (user && user.role === "user") {
+    return <Outlet />;
   }
 
-  // Logged-in admin must NOT access user pages — redirect to admin dashboard
-  if (user.role !== "user") {
-    // sessionStorage.adminTab is set on admin login and is tab-local —
-    // it is never shared to new tabs. So:
-    //   same admin tab  → adminTab is present → redirect to /showpage
-    //   fresh new tab   → adminTab is absent  → treat as unauthenticated → /login
-    const isAdminTab = sessionStorage.getItem("adminTab") === "true";
-    return <Navigate to={isAdminTab ? "/showpage" : "/login"} replace />;
+  // If an Admin is logged in and tries to access User-only protected pages → Redirect to Home
+  if (adminUser && adminUser.role === "admin") {
+    return <Navigate to="/home" replace />;
   }
 
-  return <Outlet />;
+  // Not logged in at all → User Login
+  return <Navigate to="/login" replace />;
 };
 
 export default UserProtectedRoute;

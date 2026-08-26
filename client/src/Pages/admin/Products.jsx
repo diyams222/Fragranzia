@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import "./AddProduct.css";
+import { getImageUrl } from "../../utils/imageUrl";
 
 const ITEMS_PER_PAGE = 8;
 
@@ -148,7 +149,11 @@ function AddProduct() {
                     <tr key={p._id}>
                       <td className="adp-name-cell">
                         {p.images?.[0] && (
-                          <img src={p.images[0]} alt="" className="adp-thumb" />
+                          <img
+                            src={getImageUrl(p.images[0])}
+                            alt={p.title}
+                            className="adp-thumb"
+                          />
                         )}
                         <span>{p.title}</span>
                       </td>

@@ -9,6 +9,8 @@ import {
 import { useNavigate, useLocation } from "react-router-dom";
 import "./AdminSidebar.css";
 
+import { clearAdminSession } from "../../utils/authStorage";
+
 const AdminSidebar = () => {
   const navigate = useNavigate();
   const location = useLocation();
@@ -42,13 +44,12 @@ const AdminSidebar = () => {
 
       <div className="asb-btn">
         <button
-  className="logout-sidebar-btn"
-  onClick={() => {
-    localStorage.removeItem("user");
-    sessionStorage.removeItem("adminTab");
-    navigate("/admin-login");
-  }}
->
+          className="logout-sidebar-btn"
+          onClick={() => {
+            clearAdminSession();
+            navigate("/admin-login");
+          }}
+        >
           <FaSignOutAlt /> Log Out
         </button>
       </div>

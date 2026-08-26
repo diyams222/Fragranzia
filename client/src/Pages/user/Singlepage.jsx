@@ -4,6 +4,7 @@ import axios from "axios";
 import "./Singlepage.css";
 import Navbar from "../../components/user/Navbar";
 import Footer from "../../components/user/Footer";
+import { getImageUrl } from "../../utils/imageUrl";
 
 function Singlepage() {
   const { id } = useParams();
@@ -60,7 +61,7 @@ function Singlepage() {
 
             {product.images?.length > 0 && (
               <img
-                src={`http://localhost:5000/uploads/${product.images[0]}`}
+                src={getImageUrl(product.images[0])}
                 alt={product.title}
                 className="single-image"
               />
@@ -149,7 +150,7 @@ function Singlepage() {
 
                     {item.images?.length > 0 && (
                         <img
-                            src={`http://localhost:5000/uploads/${item.images[0]}`}
+                            src={getImageUrl(item.images[0])}
                             alt={item.title}
                         />
                     )}

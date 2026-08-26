@@ -9,6 +9,8 @@ import { FaRegHeart } from "react-icons/fa6";
 import axios from "axios";
 import toast from "react-hot-toast";
 
+import { getUser } from "../../utils/authStorage";
+
 function Navbar() {
     const location = useLocation();
     const navigate = useNavigate();
@@ -25,7 +27,7 @@ function Navbar() {
     }, [location.pathname]);
 
     const fetchWishlistCount = async () => {
-        const user = JSON.parse(localStorage.getItem("user"));
+        const user = getUser();
         if (!user) {
             setWishlistCount(0);
             return;
@@ -41,7 +43,7 @@ function Navbar() {
     };
 
     const handleCartClick = () => {
-        const user = localStorage.getItem("user");
+        const user = getUser();
         if (!user) {
             toast.error("Please login first!");
             return;
@@ -50,7 +52,7 @@ function Navbar() {
     };
 
     const handleWishlistClick = () => {
-        const user = localStorage.getItem("user");
+        const user = getUser();
         if (!user) {
             toast.error("Please login first!");
             return;

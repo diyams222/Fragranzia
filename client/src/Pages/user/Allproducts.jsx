@@ -5,6 +5,8 @@ import { FaHeart, FaSlidersH } from "react-icons/fa";
 import "./Allproducts.css";
 import Navbar from "../../components/user/Navbar";
 import toast from "react-hot-toast";
+import { getUser } from "../../utils/authStorage";
+import { getImageUrl } from "../../utils/imageUrl";
 
 const SORT_OPTIONS = [
   { key: "relevance",  label: "Relevance" },
@@ -38,7 +40,7 @@ function Allproduct() {
   const [filterOpen, setFilterOpen] = useState(false);
   const filterRef = useRef(null);
   const navigate  = useNavigate();
-  const user = JSON.parse(localStorage.getItem("user"));
+  const user = getUser();
 
   /* ── Fetch ── */
   useEffect(() => {
@@ -76,7 +78,7 @@ function Allproduct() {
   };
 
   const handleAddToCart = async (productId) => {
-    const u = JSON.parse(localStorage.getItem("user"));
+    const u = getUser();
     if (!u) { toast.error("Please login first!"); return; }
     try {
       const res = await axios.post("http://localhost:5000/api/users/cart", {
@@ -92,15 +94,16 @@ function Allproduct() {
 
   const handleToggleWishlist = async (e, productId) => {
     e.stopPropagation();
-    if (!user) { toast.error("Please login first!"); return; }
+    const currentUser = getUser();
+    if (!currentUser) { toast.error("Please login first!"); return; }
     const isWishlisted = wishlist.includes(productId);
     try {
       if (isWishlisted) {
-        await axios.delete(`http://localhost:5000/api/users/wishlist/${user._id}/${productId}`);
+        await axios.delete(`http://localhost:5000/api/users/wishlist/${currentUser._id}/${productId}`);
         setWishlist((prev) => prev.filter((id) => id !== productId));
       } else {
         await axios.post("http://localhost:5000/api/users/wishlist", {
-          userId: user._id,
+          userId: currentUser._id,
           productId,
         });
         setWishlist((prev) => [...prev, productId]);
@@ -188,7 +191,7 @@ function Allproduct() {
 
               {product.images?.length > 0 && (
                 <img
-                  src={`http://localhost:5000/uploads/${product.images[0]}`}
+                  src={getImageUrl(product.images[0])}
                   alt={product.title}
                 />
               )}

@@ -4,6 +4,8 @@ import axios from "axios";
 import Navbar from "../../components/user/Navbar";
 import "./Checkout.css";
 import toast from "react-hot-toast";
+import { getUser } from "../../utils/authStorage";
+import { getImageUrl } from "../../utils/imageUrl";
 
 function Checkout() {
   const location = useLocation();
@@ -26,7 +28,7 @@ function Checkout() {
 
   const fetchAddresses = async () => {
     try {
-      const user = JSON.parse(localStorage.getItem("user"));
+      const user = getUser();
 
       const res = await axios.get(
         `http://localhost:5000/api/users/address/${user._id}`
@@ -87,7 +89,7 @@ function Checkout() {
               >
 
                 <img
-                  src={`http://localhost:5000/uploads/${item.product.images[0]}`}
+                  src={getImageUrl(item.product.images[0])}
                   alt={item.product.title}
                   className="checkout-image"
                 />
@@ -344,7 +346,7 @@ function Checkout() {
   className="pay-btn"
   onClick={async () => {
     try {
-      const user = JSON.parse(localStorage.getItem("user"));
+      const user = getUser();
       const orderItems = cart.map((item) => ({
         product: item.product._id,
         title: item.product.title,

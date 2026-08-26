@@ -45,7 +45,7 @@ const addProduct = async (req, res) => {
     console.log("BODY RECEIVED:", req.body);
     console.log("FILES:", req.files);
   const imagePaths = req.files
-  ? req.files.map((file) => file.filename)
+  ? req.files.map((file) => file.path)
   : [];
 
       console.log("BODY:", req.body);
@@ -111,7 +111,7 @@ const updateProduct = async (req, res) => {
       hasVariants: req.body.hasVariants === "true",
     };
     if (req.files && req.files.length > 0) {
-      updates.images = req.files.map(f => f.filename);
+      updates.images = req.files.map(f => f.path);
     }
     const product = await Product.findByIdAndUpdate(req.params.id, updates, { new: true });
     if (!product) return res.status(404).json({ message: "Product not found" });

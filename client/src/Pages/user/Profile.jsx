@@ -2,11 +2,12 @@ import React, { useState } from "react";
 import "./Profile.css";
 import Navbar from "../../components/user/Navbar";
 import { useNavigate } from "react-router-dom";
+import { getUser, updateUserSession, clearUserSession } from "../../utils/authStorage";
 
 function Profile() {
   const navigate = useNavigate();
 
-  const user = JSON.parse(localStorage.getItem("user"));
+  const user = getUser();
 
   // Start in editing mode so Save button shows first
   const [isEditing, setIsEditing] = useState(true);
@@ -25,9 +26,9 @@ function Profile() {
   };
 
   const handleSave = () => {
-    // Persist updated fields back to localStorage
+    // Persist updated fields back to storage
     const updatedUser = { ...user, ...formData };
-    localStorage.setItem("user", JSON.stringify(updatedUser));
+    updateUserSession(updatedUser);
     setIsEditing(false);
   };
 
@@ -36,7 +37,7 @@ function Profile() {
   };
 
   const handleLogout = () => {
-    localStorage.removeItem("user");
+    clearUserSession();
     navigate("/login");
   };
 

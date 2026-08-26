@@ -1,9 +1,11 @@
 import { useEffect, useState } from "react";
- import { useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import Navbar from "../../components/user/Navbar";
 import Footer from "../../components/user/Footer";
 import "./Cart.css";
+import { getUser } from "../../utils/authStorage";
+import { getImageUrl } from "../../utils/imageUrl";
 
 function Cart() {
  
@@ -17,7 +19,7 @@ function Cart() {
 
   const fetchCart = async () => {
     try {
-      const user = JSON.parse(localStorage.getItem("user"));
+      const user = getUser();
 
       if (!user) {
         return;
@@ -35,7 +37,7 @@ function Cart() {
 
     const deleteItem = async (productId) => {
   try {
-    const user = JSON.parse(localStorage.getItem("user"));
+    const user = getUser();
 
     await axios.delete(
       `http://localhost:5000/api/users/cart/${user._id}/${productId}`
@@ -50,7 +52,7 @@ function Cart() {
 
       const updateQuantity = async (productId, action) => {
   try {
-    const user = JSON.parse(localStorage.getItem("user"));
+    const user = getUser();
 
     await axios.put(
       `http://localhost:5000/api/users/cart/${user._id}/${productId}`,
@@ -105,7 +107,7 @@ function Cart() {
                   <div className="cart-image">
 
                     <img
-                      src={`http://localhost:5000/uploads/${item.product.images[0]}`}
+                      src={getImageUrl(item.product.images[0])}
                       alt={item.product.title}
                     />
 

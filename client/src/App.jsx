@@ -66,11 +66,12 @@ function App() {
 
           {/* ==================== PUBLIC ROUTES ==================== */}
 
+          <Route path="/" element={<Home />} />
           <Route path="/signup" element={<Signup />} />
           <Route path="/login" element={<Login />} />
           <Route path="/admin-login" element={<AdminLogin />} />
           <Route path="/home" element={<Home />} />
-            <Route path="/allproducts" element={<Allproducts />} />
+          <Route path="/allproducts" element={<Allproducts />} />
 
 
 

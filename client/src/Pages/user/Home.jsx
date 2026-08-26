@@ -3,6 +3,8 @@ import axios from "axios";
 import { FaHeart } from "react-icons/fa";
 import Footer from "../../components/user/Footer";
 import toast from "react-hot-toast";
+import { getUser } from "../../utils/authStorage";
+import { getImageUrl } from "../../utils/imageUrl";
 
 
 import "./Home.css";
@@ -52,15 +54,7 @@ function home() {
     const [products, setProducts] = useState([]);
     const [wishlist, setWishlist] = useState([]);
     const [featuredPage, setFeaturedPage] = useState(0);
-    const user = JSON.parse(localStorage.getItem("user"));
-
-    // // Admin must not access /home from their active admin tab.
-    // // sessionStorage.adminTab is set on admin login and is tab-local —
-    // // a new tab starts with empty sessionStorage, so it won't be blocked.
-    // if (user?.role === "admin" && sessionStorage.getItem("adminTab") === "true") {
-    //   navigate("/showpage", { replace: true });
-    //   return null;
-    // }
+    const user = getUser();
 
 
 
@@ -98,18 +92,19 @@ const fetchWishlist = async () => {
 
 const handleToggleWishlist = async (e, productId) => {
     e.stopPropagation();
-    if (!user) {
+    const currentUser = getUser();
+    if (!currentUser) {
         toast.error("Please login first!");
         return;
     }
     const isWishlisted = wishlist.includes(productId);
     try {
         if (isWishlisted) {
-            await axios.delete(`http://localhost:5000/api/users/wishlist/${user._id}/${productId}`);
+            await axios.delete(`http://localhost:5000/api/users/wishlist/${currentUser._id}/${productId}`);
             setWishlist((prev) => prev.filter((id) => id !== productId));
         } else {
             await axios.post("http://localhost:5000/api/users/wishlist", {
-                userId: user._id,
+                userId: currentUser._id,
                 productId,
             });
             setWishlist((prev) => [...prev, productId]);
@@ -122,7 +117,7 @@ const handleToggleWishlist = async (e, productId) => {
 
 
     const handleAddToCart = async (productId) => {
-    const user = JSON.parse(localStorage.getItem("user"));
+    const user = getUser();
 
     if (!user) {
         toast.error("Please login first!");
@@ -243,7 +238,7 @@ const handleToggleWishlist = async (e, productId) => {
 
                 {product.images?.length > 0 && (
                     <img
-                        src={`http://localhost:5000/uploads/${product.images[0]}`}
+                        src={getImageUrl(product.images[0])}
                         alt={product.title}
                     />
                 )}
@@ -333,7 +328,7 @@ const handleToggleWishlist = async (e, productId) => {
 
       {product.images?.length > 0 && (
         <img
-          src={`http://localhost:5000/uploads/${product.images[0]}`}
+          src={getImageUrl(product.images[0])}
           alt={product.title}
         />
       )}

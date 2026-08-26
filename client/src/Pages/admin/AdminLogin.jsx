@@ -1,14 +1,28 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import perfume2 from "../../assets/perfume2.png";
 import toast from "react-hot-toast";
 import "../user/Login.css"; // reuse the same styles — no UI changes
+import { getUser, getAdminUser, setAdminSession } from "../../utils/authStorage";
 
 function AdminLogin() {
   const navigate = useNavigate();
   const [email,    setEmail]    = useState("");
   const [password, setPassword] = useState("");
+
+  // If a User is already logged in, redirect to Home. If Admin is already logged in, go to dashboard.
+  useEffect(() => {
+    const user = getUser();
+    if (user && user.role === "user") {
+      navigate("/home", { replace: true });
+      return;
+    }
+    const admin = getAdminUser();
+    if (admin && admin.role === "admin") {
+      navigate("/showpage", { replace: true });
+    }
+  }, [navigate]);
 
   const handleLogin = async () => {
     if (!email || !password) {
@@ -25,9 +39,7 @@ function AdminLogin() {
       toast.success(res.data.message);
 
       // Save admin session
-      localStorage.setItem("user", JSON.stringify(res.data.user));
-      // Mark this tab as an active admin tab (tab-local, not shared to new tabs)
-      sessionStorage.setItem("adminTab", "true");
+      setAdminSession(res.data.user);
 
       navigate("/showpage");
     } catch (error) {

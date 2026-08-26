@@ -5,13 +5,15 @@ import { useNavigate } from "react-router-dom";
 import Navbar from "../../components/user/Navbar";
 import "./Wishlist.css";
 import toast from "react-hot-toast";
+import { getUser } from "../../utils/authStorage";
+import { getImageUrl } from "../../utils/imageUrl";
 
 function Wishlist() {
   const [wishlistItems, setWishlistItems] = useState([]);
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
 
-  const user = JSON.parse(localStorage.getItem("user"));
+  const user = getUser();
 
   useEffect(() => {
     if (!user) {
@@ -102,7 +104,7 @@ function Wishlist() {
               <div className="wl-img-wrap">
                 {product.images?.length > 0 ? (
                   <img
-                    src={`http://localhost:5000/uploads/${product.images[0]}`}
+                    src={getImageUrl(product.images[0])}
                     alt={product.title}
                   />
                 ) : (

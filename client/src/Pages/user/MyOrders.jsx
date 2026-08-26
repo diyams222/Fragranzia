@@ -4,6 +4,8 @@ import { useNavigate } from "react-router-dom";
 import Navbar from "../../components/user/Navbar";
 import "./MyOrders.css";
 import toast from "react-hot-toast";
+import { getUser } from "../../utils/authStorage";
+import { getImageUrl } from "../../utils/imageUrl";
 
 const RETURN_REASONS = ["Damaged", "Wrong product received"];
 
@@ -19,7 +21,7 @@ function MyOrders() {
   // cancellingItem: "orderId-itemIndex" string while a cancel request is in-flight
   const [cancellingItem, setCancellingItem] = useState(null);
 
-  const user = JSON.parse(localStorage.getItem("user"));
+  const user = getUser();
 
   useEffect(() => {
     if (!user) {
@@ -196,7 +198,7 @@ function MyOrders() {
                         <div className="order-item-row">
                           {item.image && (
                             <img
-                              src={`http://localhost:5000/uploads/${item.image}`}
+                              src={getImageUrl(item.image)}
                               alt={item.title}
                               className="order-item-img"
                             />

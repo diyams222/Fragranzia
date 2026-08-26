@@ -1,10 +1,11 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import "./Login.css";
 import axios from "axios";
 import perfume2 from "../../assets/perfume2.png";
 import { Link } from "react-router-dom";
 import toast from "react-hot-toast";
+import { getUser, getAdminUser, setUserSession } from "../../utils/authStorage";
 
 
 function Login() {
@@ -12,6 +13,15 @@ function Login() {
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+
+  // If already logged in as Admin or User in this tab, do not allow opening User Login
+  useEffect(() => {
+    const admin = getAdminUser();
+    const user = getUser();
+    if (admin || user) {
+      navigate("/home", { replace: true });
+    }
+  }, [navigate]);
 
   const handleLogin = async () => {
   if (!email || !password) {
@@ -28,20 +38,13 @@ function Login() {
       }
     );
 
-   toast.success(res.data.message);
+      toast.success(res.data.message);
 
-// Save logged-in user
-localStorage.setItem("user", JSON.stringify(res.data.user));
+      // Save user session
+      setUserSession(res.data.user);
 
-if (res.data.user.role === "admin") {
-  // Mark this tab as an active admin tab (tab-local, not shared to new tabs)
-  sessionStorage.setItem("adminTab", "true");
-  navigate("/showpage");
-} else {
-  navigate("/home");
-}
-
-  } catch (error) {
+      navigate("/home");
+    } catch (error) {
     toast.error(
       error.response?.data?.message || "Login Failed"
     );

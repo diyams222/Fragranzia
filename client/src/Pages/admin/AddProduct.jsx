@@ -52,8 +52,8 @@ function Products() {
         });
         // Show the first existing image as preview if no new file chosen
         if (p.images && p.images.length > 0) {
-          setPreview(`http://localhost:5000/uploads/${p.images[0]}`);
-        }
+  setPreview(p.images[0]);
+}
       })
       .catch(() => showToast("Failed to load product data.", "error"))
       .finally(() => setLoadingEdit(false));

@@ -6,12 +6,12 @@ export const AuthProvider = ({ children }) => {
 
     const [auth, setAuth] = useState({});
 
-    const accessToken = localStorage.getItem("accessToken");
-    // const username = localStorage.getItem("username");
-    const image = localStorage.getItem("profileImage");
-    const name = localStorage.getItem("name")
-    const role = localStorage.getItem("role");
-    const id = localStorage.getItem("userId");
+    const accessToken = sessionStorage.getItem("accessToken");
+    // const username = sessionStorage.getItem("username");
+    const image = sessionStorage.getItem("profileImage");
+    const name = sessionStorage.getItem("name")
+    const role = sessionStorage.getItem("role");
+    const id = sessionStorage.getItem("userId");
 
     if (accessToken && role && !auth.accessToken) {
         setAuth({ accessToken, role, image, name, id });
