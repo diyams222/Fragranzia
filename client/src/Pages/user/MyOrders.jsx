@@ -35,10 +35,13 @@ function MyOrders() {
 
   const fetchOrders = async () => {
     try {
+      const currentUser = getUser();
+      if (!currentUser || !currentUser._id) return;
+
       const res = await axios.get(
-  `${BASE_URL}/api/orders/user/${user._id}`
-);
-      setOrders(res.data);
+        `${BASE_URL}/api/orders/user/${currentUser._id}`
+      );
+      setOrders(Array.isArray(res.data) ? res.data : []);
     } catch (error) {
       console.error("Failed to fetch orders:", error);
     } finally {

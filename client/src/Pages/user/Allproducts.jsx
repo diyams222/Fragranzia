@@ -63,20 +63,26 @@ function Allproduct() {
  const fetchProducts = async () => {
   try {
     const res = await axios.get(`${BASE_URL}/api/products`);
-    setProducts(res.data);
+    if (Array.isArray(res.data)) {
+      setProducts(res.data);
+    }
   } catch (error) {
-    console.error(error);
+    console.error("Failed to fetch products:", error);
   }
 };
 
   const fetchWishlist = async () => {
   try {
+    const u = getUser();
+    if (!u || !u._id) return;
     const res = await axios.get(
-      `${BASE_URL}/api/users/wishlist/${user._id}`
+      `${BASE_URL}/api/users/wishlist/${u._id}`
     );
-    setWishlist(res.data.map((p) => p._id));
+    if (Array.isArray(res.data)) {
+      setWishlist(res.data.filter(Boolean).map((p) => p._id));
+    }
   } catch (error) {
-    console.error(error);
+    console.error("Failed to fetch wishlist:", error);
   }
 };
   const handleAddToCart = async (productId) => {

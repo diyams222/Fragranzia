@@ -15,7 +15,11 @@ function Checkout() {
     cartItems: [],
   };
 
-  const [cart, setCart] = useState(cartItems);
+  const initialCart = Array.isArray(cartItems)
+    ? cartItems.filter((item) => item && item.product)
+    : [];
+
+  const [cart, setCart] = useState(initialCart);
   const [addresses, setAddresses] = useState([]);
   const [selectedAddress, setSelectedAddress] = useState(null);
   const [showAddresses, setShowAddresses] = useState(false);
@@ -30,19 +34,21 @@ function Checkout() {
   const fetchAddresses = async () => {
     try {
       const user = getUser();
+      if (!user || !user._id) return;
 
       const res = await axios.get(
-  `${BASE_URL}/api/users/address/${user._id}`
-);
+        `${BASE_URL}/api/users/address/${user._id}`
+      );
 
-      setAddresses(res.data);
+      const addressList = Array.isArray(res.data) ? res.data : [];
+      setAddresses(addressList);
 
-      const primary = res.data.find((item) => item.isPrimary);
+      const primary = addressList.find((item) => item.isPrimary);
 
       if (primary) {
         setSelectedAddress(primary);
-      } else if (res.data.length > 0) {
-        setSelectedAddress(res.data[0]);
+      } else if (addressList.length > 0) {
+        setSelectedAddress(addressList[0]);
       }
 
     } catch (error) {
@@ -62,9 +68,11 @@ function Checkout() {
     setCart(updatedCart);
   };
 
-  const totalPrice = cart.reduce(
+  const validCart = Array.isArray(cart) ? cart.filter((item) => item && item.product) : [];
+
+  const totalPrice = validCart.reduce(
     (total, item) =>
-      total + item.product.salePrice * item.quantity,
+      total + (Number(item?.product?.salePrice) || 0) * (Number(item?.quantity) || 0),
     0
   );
 
@@ -80,24 +88,24 @@ function Checkout() {
 
           {/* Products */}
 
-          {cart.length === 0 ? (
+          {validCart.length === 0 ? (
             <h2>No Products Found</h2>
           ) : (
-            cart.map((item, index) => (
+            validCart.map((item, index) => (
               <div
                 className="checkout-product"
-                key={item.product._id}
+                key={item?.product?._id || index}
               >
 
                 <img
-                  src={getImageUrl(item.product.images[0])}
-                  alt={item.product.title}
+                  src={getImageUrl(item?.product?.images?.[0])}
+                  alt={item?.product?.title || "Product"}
                   className="checkout-image"
                 />
 
                 <div className="checkout-details">
 
-                  <h3>{item.product.title}</h3>
+                  <h3>{item?.product?.title}</h3>
 
                   <p className="sale-price">
                     ₹ {item.product.salePrice}
@@ -344,33 +352,46 @@ function Checkout() {
           </div>
 
           <button
-  className="pay-btn"
-  onClick={async () => {
-    try {
-      const user = getUser();
-      const orderItems = cart.map((item) => ({
-        product: item.product._id,
-        title: item.product.title,
-        image: item.product.images?.[0] || "",
-        salePrice: item.product.salePrice,
-        quantity: item.quantity,
-      }));
-     await axios.post(`${BASE_URL}/api/orders`, {
-  userId: user._id,
-  items: orderItems,
-  shippingAddress: selectedAddress,
-  paymentMethod,
-  totalAmount: totalPrice,
-});
-      setShowSuccess(true);
-    } catch (error) {
-      console.error(error);
-      toast.error("Failed to place order. Please try again.");
-    }
-  }}
->
-  Pay Now
-</button>
+            className="pay-btn"
+            disabled={validCart.length === 0}
+            onClick={async () => {
+              try {
+                const user = getUser();
+                if (!user || !user._id) {
+                  toast.error("Please login to place an order.");
+                  return;
+                }
+                if (!selectedAddress) {
+                  toast.error("Please add or select a delivery address.");
+                  return;
+                }
+                if (validCart.length === 0) {
+                  toast.error("No items to purchase.");
+                  return;
+                }
+                const orderItems = validCart.map((item) => ({
+                  product: item.product?._id,
+                  title: item.product?.title || "Product",
+                  image: item.product?.images?.[0] || "",
+                  salePrice: item.product?.salePrice || 0,
+                  quantity: item.quantity || 1,
+                }));
+                await axios.post(`${BASE_URL}/api/orders`, {
+                  userId: user._id,
+                  items: orderItems,
+                  shippingAddress: selectedAddress,
+                  paymentMethod,
+                  totalAmount: totalPrice,
+                });
+                setShowSuccess(true);
+              } catch (error) {
+                console.error(error);
+                toast.error(error.response?.data?.message || "Failed to place order. Please try again.");
+              }
+            }}
+          >
+            Pay Now
+          </button>
 
         </div>
 

@@ -28,10 +28,14 @@ function Wishlist() {
   const fetchWishlist = async () => {
     try {
       setLoading(true);
-     const res = await axios.get(
-  `${BASE_URL}/api/users/wishlist/${user._id}`
-);
-      setWishlistItems(res.data);
+      const currentUser = getUser();
+      if (!currentUser || !currentUser._id) return;
+
+      const res = await axios.get(
+        `${BASE_URL}/api/users/wishlist/${currentUser._id}`
+      );
+      const items = Array.isArray(res.data) ? res.data.filter(Boolean) : [];
+      setWishlistItems(items);
     } catch (error) {
       console.error("Failed to fetch wishlist:", error);
     } finally {
@@ -41,11 +45,14 @@ function Wishlist() {
 
   const handleRemoveFromWishlist = async (productId) => {
     try {
+      const currentUser = getUser();
+      if (!currentUser || !currentUser._id) return;
+
       await axios.delete(
-  `${BASE_URL}/api/users/wishlist/${user._id}/${productId}`
-);
+        `${BASE_URL}/api/users/wishlist/${currentUser._id}/${productId}`
+      );
       setWishlistItems((prev) =>
-        prev.filter((item) => item._id !== productId)
+        prev.filter((item) => item && item._id !== productId)
       );
     } catch (error) {
       console.error("Failed to remove from wishlist:", error);
@@ -55,11 +62,18 @@ function Wishlist() {
 
   const handleAddToCart = async (productId) => {
     try {
-     const res = await axios.post(`${BASE_URL}/api/users/cart`, {
-  userId: user._id,
-  productId,
-});
-      toast.success(res.data.message);
+      const currentUser = getUser();
+      if (!currentUser || !currentUser._id) {
+        toast.error("Please login first!");
+        navigate("/login");
+        return;
+      }
+
+      const res = await axios.post(`${BASE_URL}/api/users/cart`, {
+        userId: currentUser._id,
+        productId,
+      });
+      toast.success(res.data.message || "Product added to cart");
     } catch (error) {
       console.error(error);
       toast.error("Failed to add product to cart.");

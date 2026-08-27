@@ -25,12 +25,13 @@ const [addresses, setAddresses] = useState([]);
 const fetchAddresses = async () => {
   try {
     const user = getUser();
+    if (!user || !user._id) return;
 
     const res = await axios.get(
       `${BASE_URL}/api/users/address/${user._id}`
     );
 
-    setAddresses(res.data);
+    setAddresses(Array.isArray(res.data) ? res.data : []);
 
   } catch (error) {
     console.log(error);
@@ -46,6 +47,10 @@ useEffect(() => {
 const handleSave = async () => {
   try {
     const user = getUser();
+    if (!user || !user._id) {
+      toast.error("Please login first");
+      return;
+    }
 
     await axios.put(
       `${BASE_URL}/api/users/address/${user._id}`,
@@ -75,6 +80,7 @@ const handleSave = async () => {
 const handleDelete = async (addressId) => {
   try {
     const user = getUser();
+    if (!user || !user._id) return;
 
     await axios.delete(
       `${BASE_URL}/api/users/address/${user._id}/${addressId}`
@@ -93,6 +99,7 @@ const handleDelete = async (addressId) => {
 const handleSetPrimary = async (addressId) => {
   try {
     const user = getUser();
+    if (!user || !user._id) return;
 
     await axios.put(
        `${BASE_URL}/api/users/address/${user._id}/primary/${addressId}`

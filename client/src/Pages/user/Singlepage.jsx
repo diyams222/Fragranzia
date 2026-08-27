@@ -4,6 +4,8 @@ import axios from "axios";
 import "./Singlepage.css";
 import Navbar from "../../components/user/Navbar";
 import Footer from "../../components/user/Footer";
+import toast from "react-hot-toast";
+import { getUser } from "../../utils/authStorage";
 import { getImageUrl } from "../../utils/imageUrl";
 import { BASE_URL } from "../../axios";
 
@@ -14,8 +16,10 @@ function Singlepage() {
   const [product, setProduct] = useState(null);
   const [products, setProducts] = useState([]); // NEW
   const [suggestedPage, setSuggestedPage] = useState(0);
+  const [qty, setQty] = useState(1);
 
   useEffect(() => {
+    setQty(1);
     fetchProduct();
     fetchProducts(); // NEW
   }, [id]);
@@ -37,13 +41,56 @@ function Singlepage() {
   // NEW
   const fetchProducts = async () => {
     try {
-     const res = await axios.get(
-  `${BASE_URL}/api/products`
-);
-      setProducts(res.data);
+      const res = await axios.get(
+        `${BASE_URL}/api/products`
+      );
+      if (Array.isArray(res.data)) {
+        setProducts(res.data);
+      }
     } catch (error) {
       console.log(error);
     }
+  };
+
+  const handleAddToCart = async (targetProduct, targetQty = 1) => {
+    const user = getUser();
+    if (!user || !user._id) {
+      toast.error("Please login first!");
+      navigate("/login");
+      return;
+    }
+
+    try {
+      const res = await axios.post(`${BASE_URL}/api/users/cart`, {
+        userId: user._id,
+        productId: targetProduct._id,
+      });
+      toast.success(res.data.message || "Added to cart");
+    } catch (error) {
+      console.error(error);
+      toast.error("Failed to add product to cart");
+    }
+  };
+
+  const handleBuyNow = () => {
+    const user = getUser();
+    if (!user || !user._id) {
+      toast.error("Please login first!");
+      navigate("/login");
+      return;
+    }
+
+    navigate("/checkout", {
+      state: {
+        cartItems: [
+          {
+            product,
+            quantity: qty,
+          },
+        ],
+        totalPrice: (Number(product.salePrice) || 0) * qty,
+      },
+    });
   };
 
   if (!product) {
@@ -87,9 +134,9 @@ function Singlepage() {
           <p className="offer">{product.offer}</p>
 
           <div className="quantity-box">
-            <button>-</button>
-            <span>1</span>
-            <button>+</button>
+            <button onClick={() => setQty((prev) => Math.max(1, prev - 1))}>-</button>
+            <span>{qty}</span>
+            <button onClick={() => setQty((prev) => prev + 1)}>+</button>
           </div>
 
           <h4>Delivery</h4>
@@ -105,11 +152,11 @@ function Singlepage() {
 
           <div className="buttons">
 
-            <button className="buy-btn">
+            <button className="buy-btn" onClick={handleBuyNow}>
               Purchase Now
             </button>
 
-            <button className="cart-btn">
+            <button className="cart-btn" onClick={() => handleAddToCart(product, qty)}>
               Add To Cart
             </button>
 
@@ -139,7 +186,7 @@ function Singlepage() {
     <div className="perfumes">
 
         {products
-            .filter(item => item._id !== product._id)
+            .filter(item => item && item._id !== product._id)
             .slice(suggestedPage * 5, suggestedPage * 5 + 5)
             .map((item) => (
 
@@ -163,10 +210,15 @@ function Singlepage() {
                     </p>
 
                     <p className="oprice">
-                        RS {item.Price}
+                        RS {item.Price || item.price}
                     </p>
 
-                    <button>
+                    <button
+                        onClick={(e) => {
+                            e.stopPropagation();
+                            handleAddToCart(item, 1);
+                        }}
+                    >
                         Add to Cart
                     </button>
 
