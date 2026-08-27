@@ -3,6 +3,7 @@ import axios from "axios";
 import { useSearchParams } from "react-router-dom";
 import { MdCloudUpload } from "react-icons/md";
 import "./Products.css";
+import { BASE_URL } from "../../axios";
 
 const EMPTY_FORM = {
   title: "", price: "", salePrice: "", quantity: "",
@@ -22,7 +23,7 @@ function Products() {
   const [loadingEdit, setLoadingEdit] = useState(false);
 
   useEffect(() => {
-    axios.get("http://localhost:5000/api/categories")
+    axios.get(`${BASE_URL}/api/categories`)
       .then(r => setCategories(r.data))
       .catch(() => {});
   }, []);
@@ -36,7 +37,7 @@ function Products() {
       return;
     }
     setLoadingEdit(true);
-    axios.get(`http://localhost:5000/api/products/${editId}`)
+    axios.get(`${BASE_URL}/api/products/${editId}`)
       .then(r => {
         const p = r.data;
         setFormData({
@@ -89,11 +90,11 @@ function Products() {
 
       if (editId) {
         // UPDATE existing product
-        await axios.put(`http://localhost:5000/api/products/${editId}`, data);
+       await axios.put(`${BASE_URL}/api/products/${editId}`, data);
         showToast("Product updated successfully!");
       } else {
         // CREATE new product
-        await axios.post("http://localhost:5000/api/products", data);
+       await axios.post(`${BASE_URL}/api/products`, data);
         showToast("Product added successfully!");
         setFormData(EMPTY_FORM);
         setImage(null);

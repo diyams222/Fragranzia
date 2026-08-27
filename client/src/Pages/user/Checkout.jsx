@@ -6,6 +6,7 @@ import "./Checkout.css";
 import toast from "react-hot-toast";
 import { getUser } from "../../utils/authStorage";
 import { getImageUrl } from "../../utils/imageUrl";
+import { BASE_URL } from "../../axios";
 
 function Checkout() {
   const location = useLocation();
@@ -31,8 +32,8 @@ function Checkout() {
       const user = getUser();
 
       const res = await axios.get(
-        `http://localhost:5000/api/users/address/${user._id}`
-      );
+  `${BASE_URL}/api/users/address/${user._id}`
+);
 
       setAddresses(res.data);
 
@@ -354,13 +355,13 @@ function Checkout() {
         salePrice: item.product.salePrice,
         quantity: item.quantity,
       }));
-      await axios.post("http://localhost:5000/api/orders", {
-        userId: user._id,
-        items: orderItems,
-        shippingAddress: selectedAddress,
-        paymentMethod,
-        totalAmount: totalPrice,
-      });
+     await axios.post(`${BASE_URL}/api/orders`, {
+  userId: user._id,
+  items: orderItems,
+  shippingAddress: selectedAddress,
+  paymentMethod,
+  totalAmount: totalPrice,
+});
       setShowSuccess(true);
     } catch (error) {
       console.error(error);

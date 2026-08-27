@@ -8,6 +8,7 @@ import { FaSearch } from "react-icons/fa";
 import { FaRegHeart } from "react-icons/fa6";
 import axios from "axios";
 import toast from "react-hot-toast";
+import { BASE_URL } from "../../axios";
 
 import { getUser } from "../../utils/authStorage";
 
@@ -34,7 +35,7 @@ function Navbar() {
         }
         try {
             const res = await axios.get(
-                `http://localhost:5000/api/users/wishlist/${user._id}`
+               `${BASE_URL}/api/users/wishlist/${user._id}`
             );
             setWishlistCount(res.data.length);
         } catch (error) {

@@ -6,6 +6,7 @@ import "./MyOrders.css";
 import toast from "react-hot-toast";
 import { getUser } from "../../utils/authStorage";
 import { getImageUrl } from "../../utils/imageUrl";
+import { BASE_URL } from "../../axios";
 
 const RETURN_REASONS = ["Damaged", "Wrong product received"];
 
@@ -35,8 +36,8 @@ function MyOrders() {
   const fetchOrders = async () => {
     try {
       const res = await axios.get(
-        `http://localhost:5000/api/orders/user/${user._id}`
-      );
+  `${BASE_URL}/api/orders/user/${user._id}`
+);
       setOrders(res.data);
     } catch (error) {
       console.error("Failed to fetch orders:", error);
@@ -90,10 +91,10 @@ function MyOrders() {
     const key = `${orderId}-${itemIndex}`;
     setCancellingItem(key);
     try {
-      const res = await axios.patch(
-        `http://localhost:5000/api/orders/${orderId}/items/${itemIndex}/cancel`,
-        { userId: user._id }
-      );
+     const res = await axios.patch(
+  `${BASE_URL}/api/orders/${orderId}/items/${itemIndex}/cancel`,
+  { userId: user._id }
+);
       // Replace the updated order in state
       setOrders((prev) =>
         prev.map((o) => (o._id === orderId ? res.data.order : o))
@@ -116,9 +117,9 @@ function MyOrders() {
     setReturning(true);
     try {
       const res = await axios.patch(
-        `http://localhost:5000/api/orders/${returnForm.orderId}/items/${returnForm.itemIndex}/return`,
-        { userId: user._id, reason: returnForm.reason }
-      );
+  `${BASE_URL}/api/orders/${returnForm.orderId}/items/${returnForm.itemIndex}/return`,
+  { userId: user._id, reason: returnForm.reason }
+);
       setOrders((prev) =>
         prev.map((o) => (o._id === returnForm.orderId ? res.data.order : o))
       );

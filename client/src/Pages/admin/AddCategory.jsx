@@ -3,6 +3,7 @@ import "./AddCategory.css";
 import Category from "./Category";
 import axios from 'axios';
 import toast from 'react-hot-toast';
+import { BASE_URL } from "../../axios";
 
 const AddCategory = () => {
 
@@ -10,14 +11,14 @@ const AddCategory = () => {
   const [categories, setCategories] = useState([]);
 
   // Fetch categories from the database
-  const fetchCategories = async () => {
-    try {
-      const response = await axios.get("http://localhost:5000/api/categories");
-      setCategories(response.data);
-    } catch (error) {
-      console.error("Error fetching categories:", error);
-    }
-  };
+ const fetchCategories = async () => {
+  try {
+    const response = await axios.get(`${BASE_URL}/api/categories`);
+    setCategories(response.data);
+  } catch (error) {
+    console.error("Error fetching categories:", error);
+  }
+};
 
   useEffect(() => {
     fetchCategories();
@@ -25,16 +26,16 @@ const AddCategory = () => {
 
   // Delete a category
   const handleDeleteCategory = async (id) => {
-    if (window.confirm("Are you sure you want to delete this category?")) {
-      try {
-        await axios.delete(`http://localhost:5000/api/categories/${id}`);
-        fetchCategories();
-      } catch (error) {
-        console.error("Error deleting category:", error);
-        toast.error("Failed to delete category");
-      }
+  if (window.confirm("Are you sure you want to delete this category?")) {
+    try {
+      await axios.delete(`${BASE_URL}/api/categories/${id}`);
+      fetchCategories();
+    } catch (error) {
+      console.error("Error deleting category:", error);
+      toast.error("Failed to delete category");
     }
-  };
+  }
+};
 
   return (
     <div className="category-main">

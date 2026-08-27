@@ -6,7 +6,7 @@ import perfume from "../../assets/perfume.png";
 import { Link } from "react-router-dom";
 import toast from "react-hot-toast";
 import { getUser, getAdminUser, setUserSession } from "../../utils/authStorage";
-
+import { BASE_URL } from "../../axios";
 function Signup() {
   const navigate = useNavigate();
 
@@ -37,13 +37,13 @@ function Signup() {
 
     try {
       const res = await axios.post(
-        "http://localhost:5000/api/users/signup",
-        {
-          name,
-          email,
-          password,
-        }
-      );
+  `${BASE_URL}/api/users/signup`,
+  {
+    name,
+    email,
+    password,
+  }
+);
 
       toast.success(res.data.message);
 

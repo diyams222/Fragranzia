@@ -5,6 +5,7 @@ import perfume2 from "../../assets/perfume2.png";
 import toast from "react-hot-toast";
 import "../user/Login.css"; // reuse the same styles — no UI changes
 import { getUser, getAdminUser, setAdminSession } from "../../utils/authStorage";
+import { BASE_URL } from "../../axios";
 
 function AdminLogin() {
   const navigate = useNavigate();
@@ -32,10 +33,9 @@ function AdminLogin() {
 
     try {
       const res = await axios.post(
-        "http://localhost:5000/api/users/admin-login",
-        { email, password }
-      );
-
+  `${BASE_URL}/api/users/admin-login`,
+  { email, password }
+);
       toast.success(res.data.message);
 
       // Save admin session

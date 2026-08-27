@@ -6,6 +6,7 @@ import Footer from "../../components/user/Footer";
 import "./Cart.css";
 import { getUser } from "../../utils/authStorage";
 import { getImageUrl } from "../../utils/imageUrl";
+import { BASE_URL } from "../../axios";
 
 function Cart() {
  
@@ -26,8 +27,8 @@ function Cart() {
       }
 
       const res = await axios.get(
-        `http://localhost:5000/api/users/cart/${user._id}`
-      );
+  `${BASE_URL}/api/users/cart/${user._id}`
+);
 
       setCart(res.data);
     } catch (error) {
@@ -39,9 +40,9 @@ function Cart() {
   try {
     const user = getUser();
 
-    await axios.delete(
-      `http://localhost:5000/api/users/cart/${user._id}/${productId}`
-    );
+   await axios.delete(
+  `${BASE_URL}/api/users/cart/${user._id}/${productId}`
+);
 
     fetchCart();
 
@@ -54,10 +55,10 @@ function Cart() {
   try {
     const user = getUser();
 
-    await axios.put(
-      `http://localhost:5000/api/users/cart/${user._id}/${productId}`,
-      { action }
-    );
+   await axios.put(
+  `${BASE_URL}/api/users/cart/${user._id}/${productId}`,
+  { action }
+);
 
     fetchCart();
 

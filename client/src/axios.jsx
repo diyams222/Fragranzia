@@ -1,7 +1,7 @@
 import axios from "axios";
 
 // const apiUrl = import.meta.env.VITE_BACKEND_URL;
-const apiUrl = "http://localhost:5000"
+const apiUrl = "https://fragranzia-8wte.onrender.com";
 
 
 export const BASE_URL = apiUrl;

@@ -3,6 +3,7 @@ import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import "./AddProduct.css";
 import { getImageUrl } from "../../utils/imageUrl";
+import { BASE_URL } from "../../axios";
 
 const ITEMS_PER_PAGE = 8;
 
@@ -17,31 +18,33 @@ function AddProduct() {
   const [page,       setPage]       = useState(1);
 
   useEffect(() => {
+  fetchProducts();
+  axios.get(`${BASE_URL}/api/categories`)
+    .then(r => setCategories(r.data))
+    .catch(() => {});
+}, []);
+
+const fetchProducts = async () => {
+  setLoading(true);
+  try {
+    const res = await axios.get(`${BASE_URL}/api/products`);
+    setProducts(res.data);
+  } catch {
+    setProducts([]);
+  } finally {
+    setLoading(false);
+  }
+};
+
+const handleDelete = async (id) => {
+  if (!window.confirm("Delete this product?")) return;
+  try {
+    await axios.delete(`${BASE_URL}/api/products/${id}`);
     fetchProducts();
-    axios.get("http://localhost:5000/api/categories")
-      .then(r => setCategories(r.data))
-      .catch(() => {});
-  }, []);
-
-  const fetchProducts = async () => {
-    setLoading(true);
-    try {
-      const res = await axios.get("http://localhost:5000/api/products");
-      setProducts(res.data);
-    } catch {
-      setProducts([]);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const handleDelete = async (id) => {
-    if (!window.confirm("Delete this product?")) return;
-    try {
-      await axios.delete(`http://localhost:5000/api/products/${id}`);
-      fetchProducts();
-    } catch { /* ignore */ }
-  };
+  } catch {
+    /* ignore */
+  }
+};
 
   const resetFilters = () => {
     setSearch("");

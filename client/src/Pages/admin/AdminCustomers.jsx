@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import axios from "axios";
 import "./AdminCustomers.css";
 import toast from "react-hot-toast";
+import { BASE_URL } from "../../axios";
 
 function AdminCustomers() {
   const [users, setUsers] = useState([]);
@@ -14,7 +15,7 @@ function AdminCustomers() {
 
   const fetchUsers = async () => {
     try {
-      const res = await axios.get("http://localhost:5000/api/users/all");
+     const res = await axios.get(`${BASE_URL}/api/users/all`);
       setUsers(res.data);
     } catch (error) {
       console.error("Failed to fetch users:", error);
@@ -25,7 +26,7 @@ function AdminCustomers() {
 
   const handleToggleBlock = async (userId) => {
     try {
-      const res = await axios.put(`http://localhost:5000/api/users/block/${userId}`);
+      const res = await axios.put(`${BASE_URL}/api/users/block/${userId}`);
       setUsers((prev) =>
         prev.map((u) =>
           u._id === userId ? { ...u, isBlocked: res.data.isBlocked } : u

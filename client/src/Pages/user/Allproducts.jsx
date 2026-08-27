@@ -7,6 +7,7 @@ import Navbar from "../../components/user/Navbar";
 import toast from "react-hot-toast";
 import { getUser } from "../../utils/authStorage";
 import { getImageUrl } from "../../utils/imageUrl";
+import { BASE_URL } from "../../axios";
 
 const SORT_OPTIONS = [
   { key: "relevance",  label: "Relevance" },
@@ -59,32 +60,33 @@ function Allproduct() {
     return () => document.removeEventListener("mousedown", handler);
   }, []);
 
-  const fetchProducts = async () => {
-    try {
-      const res = await axios.get("http://localhost:5000/api/products");
-      setProducts(res.data);
-    } catch (error) {
-      console.error(error);
-    }
-  };
+ const fetchProducts = async () => {
+  try {
+    const res = await axios.get(`${BASE_URL}/api/products`);
+    setProducts(res.data);
+  } catch (error) {
+    console.error(error);
+  }
+};
 
   const fetchWishlist = async () => {
-    try {
-      const res = await axios.get(`http://localhost:5000/api/users/wishlist/${user._id}`);
-      setWishlist(res.data.map((p) => p._id));
-    } catch (error) {
-      console.error(error);
-    }
-  };
-
+  try {
+    const res = await axios.get(
+      `${BASE_URL}/api/users/wishlist/${user._id}`
+    );
+    setWishlist(res.data.map((p) => p._id));
+  } catch (error) {
+    console.error(error);
+  }
+};
   const handleAddToCart = async (productId) => {
     const u = getUser();
     if (!u) { toast.error("Please login first!"); return; }
     try {
-      const res = await axios.post("http://localhost:5000/api/users/cart", {
-        userId: u._id,
-        productId,
-      });
+      const res = await axios.post(`${BASE_URL}/api/users/cart`, {
+  userId: u._id,
+  productId,
+});
       toast.success(res.data.message);
     } catch (error) {
       console.error(error);
@@ -98,20 +100,24 @@ function Allproduct() {
     if (!currentUser) { toast.error("Please login first!"); return; }
     const isWishlisted = wishlist.includes(productId);
     try {
-      if (isWishlisted) {
-        await axios.delete(`http://localhost:5000/api/users/wishlist/${currentUser._id}/${productId}`);
-        setWishlist((prev) => prev.filter((id) => id !== productId));
-      } else {
-        await axios.post("http://localhost:5000/api/users/wishlist", {
-          userId: currentUser._id,
-          productId,
-        });
-        setWishlist((prev) => [...prev, productId]);
-      }
-    } catch (error) {
-      console.error(error);
-      toast.error("Failed to update wishlist.");
-    }
+  if (isWishlisted) {
+    await axios.delete(
+      `${BASE_URL}/api/users/wishlist/${currentUser._id}/${productId}`
+    );
+
+    setWishlist((prev) => prev.filter((id) => id !== productId));
+  } else {
+    await axios.post(`${BASE_URL}/api/users/wishlist`, {
+      userId: currentUser._id,
+      productId,
+    });
+
+    setWishlist((prev) => [...prev, productId]);
+  }
+} catch (error) {
+  console.error(error);
+  toast.error("Failed to update wishlist.");
+}
   };
 
   /* ── Compute displayed list ── */

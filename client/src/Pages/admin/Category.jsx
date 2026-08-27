@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import "./Category.css";
 import axios from "axios";
 import toast from "react-hot-toast";
+import { BASE_URL } from "../../axios";
 
 const Category = ({ setShowCategory, fetchCategories }) => {
 
@@ -21,11 +22,10 @@ const Category = ({ setShowCategory, fetchCategories }) => {
   const handleAddCategory = async () => {
     try {
 
-      const response = await axios.post(
-        "http://localhost:5000/api/categories",
-        categoryData
-      );
-
+     const response = await axios.post(
+  `${BASE_URL}/api/categories`,
+  categoryData
+);
       console.log(response.data);
 
       await fetchCategories();

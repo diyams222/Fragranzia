@@ -1,4 +1,12 @@
+const dns = require("dns");
 const mongoose = require("mongoose");
+
+// Configure DNS servers to resolve MongoDB Atlas SRV records on networks/systems where default SRV lookups fail
+try {
+  dns.setServers(["8.8.8.8", "8.8.4.4", "1.1.1.1"]);
+} catch (e) {
+  // Ignore if unable to set servers
+}
 
 const connectDb = async () => {
   try {

@@ -38,8 +38,7 @@ import endsec from "../../assets/endsec.png";
 import bluebig from "../../assets/bluebig.jpg";
 import yellowbig from "../../assets/yellowbig.png";
 import { Link, useNavigate } from "react-router-dom";
-
-
+import { BASE_URL } from "../../axios";
 
 
 
@@ -73,7 +72,7 @@ useEffect(() => {
 
 const fetchProducts = async () => {
     try {
-        const res = await axios.get("http://localhost:5000/api/products");
+     const res = await axios.get(`${BASE_URL}/api/products`);
         console.log(res.data[0]); // Check if products are coming
         setProducts(res.data);
     } catch (error) {
@@ -83,7 +82,9 @@ const fetchProducts = async () => {
 
 const fetchWishlist = async () => {
     try {
-        const res = await axios.get(`http://localhost:5000/api/users/wishlist/${user._id}`);
+      const res = await axios.get(
+  `${BASE_URL}/api/users/wishlist/${user._id}`
+);
         setWishlist(res.data.map((p) => p._id));
     } catch (error) {
         console.error(error);
@@ -99,16 +100,18 @@ const handleToggleWishlist = async (e, productId) => {
     }
     const isWishlisted = wishlist.includes(productId);
     try {
-        if (isWishlisted) {
-            await axios.delete(`http://localhost:5000/api/users/wishlist/${currentUser._id}/${productId}`);
-            setWishlist((prev) => prev.filter((id) => id !== productId));
-        } else {
-            await axios.post("http://localhost:5000/api/users/wishlist", {
-                userId: currentUser._id,
-                productId,
-            });
-            setWishlist((prev) => [...prev, productId]);
-        }
+    if (isWishlisted) {
+        await axios.delete(
+            `${BASE_URL}/api/users/wishlist/${currentUser._id}/${productId}`
+        );
+        setWishlist((prev) => prev.filter((id) => id !== productId));
+    } else {
+        await axios.post(`${BASE_URL}/api/users/wishlist`, {
+            userId: currentUser._id,
+            productId,
+        });
+        setWishlist((prev) => [...prev, productId]);
+    }
     } catch (error) {
         console.error(error);
         toast.error("Failed to update wishlist.");
@@ -125,13 +128,13 @@ const handleToggleWishlist = async (e, productId) => {
     }
 
     try {
-        const res = await axios.post(
-            "http://localhost:5000/api/users/cart",
-            {
-                userId: user._id,
-                productId,
-            }
-        );
+      const res = await axios.post(
+  `${BASE_URL}/api/users/cart`,
+  {
+    userId: user._id,
+    productId,
+  }
+);
 
         toast.success(res.data.message);
 

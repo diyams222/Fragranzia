@@ -5,6 +5,7 @@ import "./Singlepage.css";
 import Navbar from "../../components/user/Navbar";
 import Footer from "../../components/user/Footer";
 import { getImageUrl } from "../../utils/imageUrl";
+import { BASE_URL } from "../../axios";
 
 function Singlepage() {
   const { id } = useParams();
@@ -21,9 +22,9 @@ function Singlepage() {
 
   const fetchProduct = async () => {
     try {
-      const res = await axios.get(
-        `http://localhost:5000/api/products/${id}`
-      );
+     const res = await axios.get(
+  `${BASE_URL}/api/products/${id}`
+);
 
       console.log("Product:", res.data);
 
@@ -36,9 +37,9 @@ function Singlepage() {
   // NEW
   const fetchProducts = async () => {
     try {
-      const res = await axios.get(
-        "http://localhost:5000/api/products"
-      );
+     const res = await axios.get(
+  `${BASE_URL}/api/products`
+);
       setProducts(res.data);
     } catch (error) {
       console.log(error);

@@ -7,6 +7,7 @@ import "./Wishlist.css";
 import toast from "react-hot-toast";
 import { getUser } from "../../utils/authStorage";
 import { getImageUrl } from "../../utils/imageUrl";
+import { BASE_URL } from "../../axios";
 
 function Wishlist() {
   const [wishlistItems, setWishlistItems] = useState([]);
@@ -27,9 +28,9 @@ function Wishlist() {
   const fetchWishlist = async () => {
     try {
       setLoading(true);
-      const res = await axios.get(
-        `http://localhost:5000/api/users/wishlist/${user._id}`
-      );
+     const res = await axios.get(
+  `${BASE_URL}/api/users/wishlist/${user._id}`
+);
       setWishlistItems(res.data);
     } catch (error) {
       console.error("Failed to fetch wishlist:", error);
@@ -41,8 +42,8 @@ function Wishlist() {
   const handleRemoveFromWishlist = async (productId) => {
     try {
       await axios.delete(
-        `http://localhost:5000/api/users/wishlist/${user._id}/${productId}`
-      );
+  `${BASE_URL}/api/users/wishlist/${user._id}/${productId}`
+);
       setWishlistItems((prev) =>
         prev.filter((item) => item._id !== productId)
       );
@@ -54,10 +55,10 @@ function Wishlist() {
 
   const handleAddToCart = async (productId) => {
     try {
-      const res = await axios.post("http://localhost:5000/api/users/cart", {
-        userId: user._id,
-        productId,
-      });
+     const res = await axios.post(`${BASE_URL}/api/users/cart`, {
+  userId: user._id,
+  productId,
+});
       toast.success(res.data.message);
     } catch (error) {
       console.error(error);

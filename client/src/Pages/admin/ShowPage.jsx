@@ -7,6 +7,7 @@ import {
 import { FiDollarSign, FiRefreshCw } from "react-icons/fi";
 import { FiShoppingBag, FiBox, FiUsers } from "react-icons/fi";
 import "./ShowPage.css";
+import { BASE_URL } from "../../axios";
 
 const COLORS = ["#4F8EF7", "#00b074", "#f59e0b", "#ef4444", "#8b5cf6"];
 
@@ -30,11 +31,11 @@ function ShowPage() {
 
   const fetchDashboard = async () => {
     try {
-      const [ordersRes, productsRes, usersRes] = await Promise.all([
-        axios.get("http://localhost:5000/api/orders"),
-        axios.get("http://localhost:5000/api/products"),
-        axios.get("http://localhost:5000/api/users/all").catch(() => ({ data: [] })),
-      ]);
+  const [ordersRes, productsRes, usersRes] = await Promise.all([
+    axios.get(`${BASE_URL}/api/orders`),
+    axios.get(`${BASE_URL}/api/products`),
+    axios.get(`${BASE_URL}/api/users/all`).catch(() => ({ data: [] })),
+  ]);
 
       const orders = ordersRes.data || [];
       const products = productsRes.data || [];

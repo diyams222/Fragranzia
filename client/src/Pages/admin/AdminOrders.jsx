@@ -3,6 +3,7 @@ import axios from "axios";
 import "./AdminOrders.css";
 import toast from "react-hot-toast";
 import { getImageUrl } from "../../utils/imageUrl";
+import { BASE_URL } from "../../axios";
 
 function AdminOrders() {
   const [orders, setOrders] = useState([]);
@@ -15,7 +16,7 @@ function AdminOrders() {
 
   const fetchOrders = async () => {
     try {
-      const res = await axios.get("http://localhost:5000/api/orders");
+    const res = await axios.get(`${BASE_URL}/api/orders`);
       setOrders(res.data);
     } catch (error) {
       console.error("Failed to fetch orders:", error);
@@ -26,7 +27,7 @@ function AdminOrders() {
 
   const handleStatusChange = async (orderId, status) => {
     try {
-      await axios.put(`http://localhost:5000/api/orders/${orderId}/status`, { status });
+   await axios.put(`${BASE_URL}/api/orders/${orderId}/status`, { status });
       setOrders((prev) => prev.map((o) => (o._id === orderId ? { ...o, status } : o)));
       if (selectedOrder?._id === orderId) {
         setSelectedOrder((prev) => ({ ...prev, status }));
@@ -40,9 +41,9 @@ function AdminOrders() {
   const handleItemStatusChange = async (orderId, itemIndex, status) => {
     try {
       const res = await axios.patch(
-        `http://localhost:5000/api/orders/${orderId}/items/${itemIndex}/status`,
-        { status }
-      );
+  `${BASE_URL}/api/orders/${orderId}/items/${itemIndex}/status`,
+  { status }
+);
       const updatedOrder = res.data.order;
       setOrders((prev) => prev.map((o) => (o._id === orderId ? updatedOrder : o)));
       if (selectedOrder?._id === orderId) {
@@ -86,10 +87,10 @@ function AdminOrders() {
       const adminNote = action === "reject"
         ? prompt("Optional: Enter a note for the customer (e.g. reason for rejection):")
         : "";
-      await axios.patch(`http://localhost:5000/api/orders/${orderId}/return/handle`, {
-        action,
-        adminNote: adminNote || "",
-      });
+     await axios.patch(`${BASE_URL}/api/orders/${orderId}/return/handle`, {
+  action,
+  adminNote: adminNote || "",
+});
       const newStatus = action === "approve" ? "Returned" : "Delivered";
       setOrders((prev) =>
         prev.map((o) => (o._id === orderId ? { ...o, status: newStatus } : o))

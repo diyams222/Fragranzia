@@ -5,6 +5,7 @@ import Navbar from "../../components/user/Navbar";
 import axios from "axios";
 import toast from "react-hot-toast";
 import { getUser } from "../../utils/authStorage";
+import { BASE_URL } from "../../axios";
 
 function Address() {
   const navigate = useNavigate();
@@ -26,7 +27,7 @@ const fetchAddresses = async () => {
     const user = getUser();
 
     const res = await axios.get(
-      `http://localhost:5000/api/users/address/${user._id}`
+      `${BASE_URL}/api/users/address/${user._id}`
     );
 
     setAddresses(res.data);
@@ -47,7 +48,7 @@ const handleSave = async () => {
     const user = getUser();
 
     await axios.put(
-      `http://localhost:5000/api/users/address/${user._id}`,
+      `${BASE_URL}/api/users/address/${user._id}`,
       {
         fullName,
         phone,
@@ -76,7 +77,7 @@ const handleDelete = async (addressId) => {
     const user = getUser();
 
     await axios.delete(
-      `http://localhost:5000/api/users/address/${user._id}/${addressId}`
+      `${BASE_URL}/api/users/address/${user._id}/${addressId}`
     );
 
     toast.success("Address deleted successfully");
@@ -94,7 +95,7 @@ const handleSetPrimary = async (addressId) => {
     const user = getUser();
 
     await axios.put(
-      `http://localhost:5000/api/users/address/${user._id}/primary/${addressId}`
+       `${BASE_URL}/api/users/address/${user._id}/primary/${addressId}`
     );
 
     toast.success("Primary address updated");

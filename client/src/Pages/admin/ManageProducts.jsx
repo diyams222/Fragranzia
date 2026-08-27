@@ -3,6 +3,7 @@ import axios from "axios";
 import "./ManageProducts.css";
 import AdminNavBar from "../../components/admin/AdminNavBar";
 import AdminSidebar from "../../components/admin/AdminSidebar";
+import { BASE_URL } from "../../axios";
 
 function ManageProducts() {
   const [products, setProducts] = useState([]);
@@ -13,7 +14,7 @@ function ManageProducts() {
 
   const fetchProducts = async () => {
     try {
-      const res = await axios.get("http://localhost:5000/api/products");
+      const res = await axios.get(`${BASE_URL}/api/products`);
       setProducts(res.data);
     } catch (error) {
       console.log(error);
@@ -22,7 +23,7 @@ function ManageProducts() {
    
   const deleteProduct = async (id) => {
   try {
-    await axios.delete(`http://localhost:5000/api/products/${id}`);
+    await axios.delete(`${BASE_URL}/api/products/${id}`);
     fetchProducts();
   } catch (error) {
     console.log(error);
