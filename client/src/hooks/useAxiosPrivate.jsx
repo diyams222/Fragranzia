@@ -1,8 +1,7 @@
 import { useEffect } from "react";
 // import Swal from "sweetalert2";
 import useAuth from "./useAuth";
-import { axiosPrivate } from "../axios";
-// import { genericError } from "../utils/genericError"; 
+import { axiosPrivate } from "../axios"; 
 
 
 const useAxiosPrivate = () => {

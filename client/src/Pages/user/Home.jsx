@@ -12,7 +12,6 @@ import Navbar from "../../components/user/Navbar";
 import small1 from "../../assets/small1.png";
 import small2 from "../../assets/small2.png";
 import small3 from "../../assets/small3.png";
-// import text from "../assets/text.png"
 import text1 from "../../assets/text1.png";
 import text2 from "../../assets/text2.png";
 import text3 from "../../assets/text3.png";
