@@ -1,6 +1,5 @@
-/**
- * Helper to safely resolve product image URLs (Cloudinary, absolute URLs, or local uploads)
- */
+const API_URL = "https://fragranzia-8wte.onrender.com";
+
 export const getImageUrl = (image) => {
   if (!image || typeof image !== "string") return "";
 
@@ -14,12 +13,12 @@ export const getImageUrl = (image) => {
   }
 
   if (image.startsWith("/uploads/")) {
-    return `http://localhost:5000${image}`;
+    return `${API_URL}${image}`;
   }
 
   if (image.startsWith("uploads/")) {
-    return `http://localhost:5000/${image}`;
+    return `${API_URL}/${image}`;
   }
 
-  return `http://localhost:5000/uploads/${image}`;
+  return `${API_URL}/uploads/${image}`;
 };
