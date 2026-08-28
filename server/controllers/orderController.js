@@ -1,5 +1,6 @@
 const Order = require("../models/Order");
 const Product = require("../models/Product");
+const { User } = require("../models/User");
 
 // Place a new order
 const placeOrder = async (req, res) => {
@@ -28,6 +29,12 @@ const placeOrder = async (req, res) => {
         })
       )
     );
+
+    // Remove ordered items from the user's cart
+    const orderedProductIds = items.map((item) => item.product);
+    await User.findByIdAndUpdate(userId, {
+      $pull: { cart: { product: { $in: orderedProductIds } } },
+    });
 
     res.status(201).json({ message: "Order placed successfully!", order });
   } catch (error) {

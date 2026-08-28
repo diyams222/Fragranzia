@@ -258,8 +258,13 @@
   list-style: none;
 }
 
-.drawer-nav-links a {
+.drawer-nav-links a,
+.drawer-nav-links .drawer-link-btn {
   display: block;
+  width: 100%;
+  text-align: left;
+  background: none;
+  border: none;
   text-decoration: none;
   color: #222;
   font-size: 16px;
@@ -267,10 +272,13 @@
   padding: 14px 20px;
   border-bottom: 1px solid #f5f5f5;
   transition: background 0.2s, color 0.2s;
+  cursor: pointer;
+  font-family: inherit;
 }
 
 .drawer-nav-links a:hover,
-.drawer-nav-links a.active {
+.drawer-nav-links a.active,
+.drawer-nav-links .drawer-link-btn:hover {
   background: #f0f4ff;
   color: #0f3d56;
 }

@@ -9,8 +9,8 @@ function Profile() {
 
   const user = getUser();
 
-  // Start in editing mode so Save button shows first
-  const [isEditing, setIsEditing] = useState(true);
+  // Start in view mode so Edit button shows first
+  const [isEditing, setIsEditing] = useState(false);
 
   const [formData, setFormData] = useState({
     name: user?.name || "",
@@ -38,7 +38,7 @@ function Profile() {
 
   const handleLogout = () => {
     clearUserSession();
-    navigate("/login");
+    navigate("/home");
   };
 
   return (

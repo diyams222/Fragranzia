@@ -47,7 +47,7 @@ const AdminSidebar = () => {
           className="logout-sidebar-btn"
           onClick={() => {
             clearAdminSession();
-            navigate("/admin-login");
+            navigate("/login");
           }}
         >
           <FaSignOutAlt /> Log Out

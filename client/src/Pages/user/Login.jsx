@@ -5,7 +5,7 @@ import axios from "axios";
 import perfume2 from "../../assets/perfume2.png";
 import { Link } from "react-router-dom";
 import toast from "react-hot-toast";
-import { getUser, getAdminUser, setUserSession } from "../../utils/authStorage";
+import { getUser, getAdminUser, setUserSession, setAdminSession } from "../../utils/authStorage";
 import { BASE_URL } from "../../axios";
 
 function Login() {
@@ -14,42 +14,71 @@ function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
-  // If already logged in as Admin or User in this tab, do not allow opening User Login
+  // If already logged in, redirect to respective dashboard/home
   useEffect(() => {
     const admin = getAdminUser();
+    if (admin) {
+      navigate("/showpage", { replace: true });
+      return;
+    }
     const user = getUser();
-    if (admin || user) {
+    if (user) {
       navigate("/home", { replace: true });
     }
   }, [navigate]);
 
   const handleLogin = async () => {
-  if (!email || !password) {
-    toast.error("Please enter email and password.");
-    return;
-  }
+    if (!email || !password) {
+      toast.error("Please enter email and password.");
+      return;
+    }
 
-  try {
-   const res = await axios.post(
-  `${BASE_URL}/api/users/login`,
-  {
-    email,
-    password,
-  }
-);
+    try {
+      let res;
+      try {
+        res = await axios.post(
+          `${BASE_URL}/api/users/login`,
+          {
+            email,
+            password,
+          }
+        );
+      } catch (loginErr) {
+        const msg = loginErr.response?.data?.message || "";
+        // If live backend throws the legacy admin restriction error, automatically authenticate via admin-login
+        if (
+          loginErr.response?.status === 403 &&
+          (msg.toLowerCase().includes("admin") || msg.toLowerCase().includes("user login"))
+        ) {
+          res = await axios.post(
+            `${BASE_URL}/api/users/admin-login`,
+            {
+              email,
+              password,
+            }
+          );
+        } else {
+          throw loginErr;
+        }
+      }
 
-      toast.success(res.data.message);
+      const loggedUser = res.data.user;
 
-      // Save user session
-      setUserSession(res.data.user);
-
-      navigate("/home");
+      if (loggedUser && loggedUser.role && loggedUser.role.trim().toLowerCase() === "admin") {
+        setAdminSession(loggedUser);
+        toast.success(res.data.message || "Admin Login Successful");
+        navigate("/showpage", { replace: true });
+      } else {
+        setUserSession(loggedUser);
+        toast.success(res.data.message || "Login Successful");
+        navigate("/home", { replace: true });
+      }
     } catch (error) {
-    toast.error(
-      error.response?.data?.message || "Login Failed"
-    );
-  }
-};
+      toast.error(
+        error.response?.data?.message || "Login Failed"
+      );
+    }
+  };
 
   return (
     <>

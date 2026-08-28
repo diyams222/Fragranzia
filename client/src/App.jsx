@@ -8,7 +8,7 @@ import Navbar from "./components/user/Navbar.jsx";
 import AdminNavBar from "./components/admin/AdminNavBar.jsx";
 import AdminProtectedRoute from "./components/protected-route/AdminProtectedRoute.jsx";
 import UserProtectedRoute from "./components/protected-route/UserProtectedRoute.jsx";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import AdminSidebar from "./components/admin/AdminSidebar.jsx";
 import AddProduct from "./Pages/admin/AddProduct.jsx";
 import ShowPage from "./Pages/admin/ShowPage.jsx";
@@ -25,7 +25,6 @@ import Wishlist from "./Pages/user/Wishlist.jsx";
 import AdminOrders from "./Pages/admin/AdminOrders.jsx";
 import AdminCustomers from "./Pages/admin/AdminCustomers.jsx";
 import Products from "./Pages/admin/Products.jsx";
-import AdminLogin from "./Pages/admin/AdminLogin.jsx";
 
 function App() {
   return (
@@ -69,7 +68,8 @@ function App() {
           <Route path="/" element={<Home />} />
           <Route path="/signup" element={<Signup />} />
           <Route path="/login" element={<Login />} />
-          <Route path="/admin-login" element={<AdminLogin />} />
+          <Route path="/admin-login" element={<Navigate to="/login" replace />} />
+          <Route path="/admin/login" element={<Navigate to="/login" replace />} />
           <Route path="/home" element={<Home />} />
           <Route path="/allproducts" element={<Allproducts />} />
 
@@ -78,9 +78,7 @@ function App() {
           {/* ==================== USER TEST ROUTES ==================== */}
 
           <Route path="/navbar" element={<Navbar />} />
-          <Route path="/adminnavbar" element={<AdminNavBar />} />
-          <Route path="/adminsidebar" element={<AdminSidebar />} />
-            <Route path="/about" element={<About />} />
+          <Route path="/about" element={<About />} />
 
 
 
@@ -115,8 +113,6 @@ function App() {
 
             <Route path="/showpage" element={<ShowPage />} />
 
-            {/* <Route path="/addProduct" element={<AddProduct />} /> */}
-
             <Route path="/addproduct" element={<AddProduct />} />
 
             <Route path="/addcategory" element={<AddCategory />} />
@@ -130,6 +126,10 @@ function App() {
             <Route path="/customers" element={<AdminCustomers />} />
 
             <Route path="/products" element={<Products />} />
+
+            <Route path="/adminnavbar" element={<AdminNavBar />} />
+
+            <Route path="/adminsidebar" element={<AdminSidebar />} />
 
           </Route>
 

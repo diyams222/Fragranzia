@@ -61,6 +61,15 @@ function Navbar() {
         navigate("/wishlist");
     };
 
+    const handleProfileClick = () => {
+        const user = getUser();
+        if (!user) {
+            navigate("/login");
+            return;
+        }
+        navigate("/profile");
+    };
+
     return (
         <>
             <div className="navbar">
@@ -98,7 +107,7 @@ function Navbar() {
                             <RiShoppingCartLine />
                         </button>
                         <button><CiBellOn /></button>
-                        <button onClick={() => navigate("/profile")}><MdManageAccounts /></button>
+                        <button onClick={handleProfileClick}><MdManageAccounts /></button>
                     </div>
 
                     {/* Hamburger — visible only on mobile */}
@@ -139,7 +148,7 @@ function Navbar() {
                     <li><Link to="/allproducts" className={location.pathname === "/allproducts" ? "active" : ""}>Products</Link></li>
                     <li><Link to="/" className={location.pathname === "/" ? "active" : ""}>Gifting</Link></li>
                     <li><Link to="/about" className={location.pathname === "/about" ? "active" : ""}>About</Link></li>
-                    <li><Link to="/profile" className={location.pathname === "/profile" ? "active" : ""}>Profile</Link></li>
+                    <li><button className="drawer-link-btn" onClick={() => { setDrawerOpen(false); handleProfileClick(); }}>Profile</button></li>
                 </ul>
 
                 <div className="drawer-icons">
@@ -157,7 +166,7 @@ function Navbar() {
                         <RiShoppingCartLine />
                     </button>
                     <button><CiBellOn /></button>
-                    <button onClick={() => { setDrawerOpen(false); navigate("/profile"); }}>
+                    <button onClick={() => { setDrawerOpen(false); handleProfileClick(); }}>
                         <MdManageAccounts />
                     </button>
                 </div>

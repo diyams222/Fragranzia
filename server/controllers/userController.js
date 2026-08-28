@@ -44,9 +44,8 @@ const login = async (req, res) => {
       return res.status(400).json({ message: "Invalid email or password" });
     }
 
-    // Admin accounts must use the admin login flow — block them here
-    if (user.role !== "user") {
-      return res.status(403).json({ message: "Admin accounts cannot log in through the user login." });
+    if (user.isBlocked) {
+      return res.status(403).json({ message: "Your account is blocked. Please contact support." });
     }
 
     res.status(200).json({ message: "Login Successful", user });

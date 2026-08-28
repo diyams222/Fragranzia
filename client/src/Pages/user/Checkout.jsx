@@ -1,4 +1,4 @@
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
 import axios from "axios";
 import Navbar from "../../components/user/Navbar";
@@ -10,6 +10,7 @@ import { BASE_URL } from "../../axios";
 
 function Checkout() {
   const location = useLocation();
+  const navigate = useNavigate();
 
   const { cartItems } = location.state || {
     cartItems: [],
@@ -383,6 +384,17 @@ function Checkout() {
                   paymentMethod,
                   totalAmount: totalPrice,
                 });
+
+                // Remove successfully ordered items from user's cart
+                await Promise.all(
+                  orderItems.map((item) =>
+                    axios
+                      .delete(`${BASE_URL}/api/users/cart/${user._id}/${item.product}`)
+                      .catch(() => {})
+                  )
+                );
+
+                setCart([]);
                 setShowSuccess(true);
               } catch (error) {
                 console.error(error);
@@ -422,12 +434,21 @@ function Checkout() {
 
       <button
         className="home-btn"
-        onClick={() => setShowSuccess(false)}
+        onClick={() => {
+          setShowSuccess(false);
+          navigate("/home");
+        }}
       >
         Back to Home
       </button>
 
-      <button className="track-btn">
+      <button
+        className="track-btn"
+        onClick={() => {
+          setShowSuccess(false);
+          navigate("/myorders");
+        }}
+      >
         Track Order
       </button>
 
