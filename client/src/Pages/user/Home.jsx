@@ -52,6 +52,9 @@ function home() {
     const [products, setProducts] = useState([]);
     const [wishlist, setWishlist] = useState([]);
     const [featuredPage, setFeaturedPage] = useState(0);
+    const [featuredDir, setFeaturedDir] = useState("next");
+    const [offersPage, setOffersPage] = useState(0);
+    const [offersDir, setOffersDir] = useState("next");
     const user = getUser();
 
 
@@ -218,7 +221,7 @@ const handleToggleWishlist = async (e, productId) => {
 
 
 <div className="feau">
-    <h2>Feautured Collections</h2>
+    <h2>Featured <span>Collections</span></h2>
 </div>
 
 <div className="featured-section">
@@ -226,13 +229,20 @@ const handleToggleWishlist = async (e, productId) => {
     {featuredPage > 0 && (
         <button
             className="featured-prev-btn"
-            onClick={() => setFeaturedPage(prev => prev - 1)}
+            onClick={() => {
+                setFeaturedDir("prev");
+                setFeaturedPage(prev => prev - 1);
+            }}
+            aria-label="Previous Featured Products"
         >
             &#8249;
         </button>
     )}
 
-    <div className="perfumes">
+    <div
+        key={`featured-${featuredPage}`}
+        className={`perfumes ${featuredDir === "next" ? "slide-from-right" : "slide-from-left"}`}
+    >
         {products.slice(featuredPage * 5, featuredPage * 5 + 5).map((product) => (
             <div className="product-card" key={product._id}>
 
@@ -266,7 +276,11 @@ const handleToggleWishlist = async (e, productId) => {
     {products.length > (featuredPage * 5 + 5) && (
         <button
             className="featured-next-btn"
-            onClick={() => setFeaturedPage(prev => prev + 1)}
+            onClick={() => {
+                setFeaturedDir("next");
+                setFeaturedPage(prev => prev + 1);
+            }}
+            aria-label="Next Featured Products"
         >
             &#8250;
         </button>
@@ -298,59 +312,99 @@ const handleToggleWishlist = async (e, productId) => {
 
 
         <div className="explore">
-        <h2>Explore Categories</h2>
+          <h2>
+            Explore <span>Categories</span>
+          </h2>
         </div>
 
         <div className="sprays">
-
-           <div><img src={sp1} alt="" /></div> 
-            <div><img src={sp2} alt="" /></div>
-            <div><img src={sp3} alt="" /></div>
-            <div><img src={sp4} alt="" /></div>
-            <div><img src={sp5} alt="" /></div>
-
-
-
-            
+          <div onClick={() => navigate("/allproducts")}>
+            <img src={sp1} alt="Eau De Parfum" />
+          </div>
+          <div onClick={() => navigate("/allproducts")}>
+            <img src={sp2} alt="Concentrated" />
+          </div>
+          <div onClick={() => navigate("/allproducts")}>
+            <img src={sp3} alt="Deodorants" />
+          </div>
+          <div onClick={() => navigate("/allproducts")}>
+            <img src={sp4} alt="Body Mist" />
+          </div>
+          <div onClick={() => navigate("/allproducts")}>
+            <img src={sp5} alt="Combo" />
+          </div>
         </div>
         
 
 
 
 <div className="offers">
-<h2>Offers Zone</h2>
+    <h2>Offers <span>Zone</span></h2>
 </div>
 
 
-<div className="perfumes">
-  {products.slice(5, 10).map((product) => (
-    <div className="product-card" key={product._id}>
+<div className="featured-section">
 
-      <button
-        className="wishlist-heart-btn"
-        onClick={(e) => handleToggleWishlist(e, product._id)}
-        title={wishlist.includes(product._id) ? "Remove from wishlist" : "Add to wishlist"}
-      >
-        <FaHeart className={`heart-icon ${wishlist.includes(product._id) ? "heart-active" : ""}`} />
-      </button>
+    {offersPage > 0 && (
+        <button
+            className="featured-prev-btn"
+            onClick={() => {
+                setOffersDir("prev");
+                setOffersPage(prev => prev - 1);
+            }}
+            aria-label="Previous Offers"
+        >
+            &#8249;
+        </button>
+    )}
 
-      {product.images?.length > 0 && (
-        <img
-          src={getImageUrl(product.images[0])}
-          alt={product.title}
-        />
-      )}
+    <div
+        key={`offers-${offersPage}`}
+        className={`perfumes ${offersDir === "next" ? "slide-from-right" : "slide-from-left"}`}
+    >
+        {products.slice(offersPage * 5, offersPage * 5 + 5).map((product) => (
+            <div className="product-card" key={product._id}>
 
-      <h3>{product.title}</h3>
+                <button
+                    className="wishlist-heart-btn"
+                    onClick={(e) => handleToggleWishlist(e, product._id)}
+                    title={wishlist.includes(product._id) ? "Remove from wishlist" : "Add to wishlist"}
+                >
+                    <FaHeart className={`heart-icon ${wishlist.includes(product._id) ? "heart-active" : ""}`} />
+                </button>
 
-      <p className="sprice">RS {product.salePrice}</p>
-      <p className="oprice">RS {product.Price}</p>
+                {product.images?.length > 0 && (
+                    <img
+                        src={getImageUrl(product.images[0])}
+                        alt={product.title}
+                    />
+                )}
 
-      <button onClick={() => handleAddToCart(product._id)}>
-        Add to Cart
-      </button>
+                <h3>{product.title}</h3>
+
+                <p className="sprice">RS {product.salePrice}</p>
+                <p className="oprice">RS {product.Price}</p>
+
+                <button onClick={() => handleAddToCart(product._id)}>
+                    Add to Cart
+                </button>
+            </div>
+        ))}
     </div>
-  ))}
+
+    {products.length > (offersPage * 5 + 5) && (
+        <button
+            className="featured-next-btn"
+            onClick={() => {
+                setOffersDir("next");
+                setOffersPage(prev => prev + 1);
+            }}
+            aria-label="Next Offers"
+        >
+            &#8250;
+        </button>
+    )}
+
 </div>
 
 
@@ -360,7 +414,7 @@ const handleToggleWishlist = async (e, productId) => {
         </div>
 
 
-<div className="end"> 
+{/* <div className="end"> 
 <div>
         <h2>Fragranzia</h2>
         </div>
@@ -382,8 +436,9 @@ const handleToggleWishlist = async (e, productId) => {
             <p>Customer <br/>service</p>
 
             </div>
-            </div>
+            </div> */}
 
+        <Footer/>
 
         </>
 

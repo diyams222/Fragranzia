@@ -16,7 +16,9 @@
 .smalls{
     display: flex;
     flex-wrap: wrap;
-    padding: 10px 16px;
+    width: 100%;
+    box-sizing: border-box;
+    padding: 10px 1cm;
     gap: 16px;
 }
 .smalls img{
@@ -31,7 +33,7 @@
     width: 100%;
     box-sizing: border-box;
     gap: 25px;
-    padding: 50px 28px 28px;
+    padding: 50px 1cm 28px 1cm;
     margin-left: 0;
     flex-wrap: wrap;
 }
@@ -160,44 +162,106 @@
     justify-items: center;
     box-sizing: border-box;
 }
-.pics{
-    display: flex;
-    flex-wrap: wrap;
-    padding: 20px;
-    gap: 8px;
-}
-.pics > div {
-    flex: 1 1 200px;
-    min-width: 0;
-}
-.pics img{
+.pics {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+    padding: 20px 24px;
+    max-width: 1380px;
+    margin: 0 auto;
+    box-sizing: border-box;
     width: 100%;
+}
+
+.pics > div {
+    width: 100%;
+    aspect-ratio: 490 / 716;
+    overflow: hidden;
+    border-radius: 12px;
+    display: flex;
+}
+
+.pics img {
+    width: 100%;
+    height: 100%;
+    object-fit: fill;
     display: block;
+    border-radius: 12px;
 }
-.explore{
- margin-left: 20px;
- font-size: 15px;
+.explore {
+    max-width: 1380px;
+    margin: 45px auto 16px auto;
+    padding: 0 24px;
+    box-sizing: border-box;
+    width: 100%;
 }
+
+.explore h2 {
+    font-size: 28px;
+    font-weight: 800;
+    color: #000000;
+    margin: 0;
+    letter-spacing: -0.4px;
+}
+
+.explore h2 span {
+    color: #002d3d;
+}
+
 .sprays {
     display: flex;
-    flex-wrap: wrap;
-    padding: 10px;
-    gap: 8px;
-}
-.sprays > div {
-    flex: 1 1 140px;
-    min-width: 0;
-}
-.sprays img{
+    justify-content: space-between;
+    align-items: center;
+    gap: 20px;
+    padding: 10px 24px 45px 24px;
+    max-width: 1380px;
+    margin: 0 auto;
+    box-sizing: border-box;
     width: 100%;
+}
+
+.sprays > div {
+    flex: 1;
+    max-width: 240px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transition: transform 0.25s ease, filter 0.25s ease;
+    cursor: pointer;
+}
+
+.sprays > div:hover {
+    transform: translateY(-6px);
+    filter: drop-shadow(0 8px 18px rgba(0, 0, 0, 0.1));
+}
+
+.sprays img {
+    width: 100%;
+    max-width: 230px;
+    height: auto;
+    object-fit: contain;
     display: block;
 }
-.feau{
-    margin-left: 20px;
-    padding: 20px;
-    font-size: 15px;
-    padding-bottom: 3px;
+.feau {
+    max-width: 1380px;
+    margin: 45px auto 16px auto;
+    padding: 0 24px;
+    box-sizing: border-box;
+    width: 100%;
 }
+
+.feau h2 {
+    font-size: 28px;
+    font-weight: 800;
+    color: #000000;
+    margin: 0;
+    letter-spacing: -0.4px;
+}
+
+.feau h2 span {
+    color: #002d3d;
+}
+
 .perfumes2{
     display: flex;
     flex-wrap: wrap;
@@ -229,22 +293,35 @@
 .perfumes2 button:hover{
     background-color: #01283c;
 }
-.offers{
-    margin-left: 20px;
-    padding: 20px;
-    font-size: 15px;
-    padding-bottom: 1px;
-    padding-top: 50px;
 
+.offers {
+    max-width: 1380px;
+    margin: 45px auto 16px auto;
+    padding: 0 24px;
+    box-sizing: border-box;
+    width: 100%;
+}
+
+.offers h2 {
+    font-size: 28px;
+    font-weight: 800;
+    color: #000000;
+    margin: 0;
+    letter-spacing: -0.4px;
+}
+
+.offers h2 span {
+    color: #002d3d;
 }
 .endsection {
     width: 100%;
-    padding: 20px;
-    padding-top: 80px;
+    padding: 20px 20px 0 20px;
+    padding-top: 50px;
     box-sizing: border-box;
 }
 .endsection img{
     width: 100%;
+    display: block;
 }
 .end{
     display: flex;
@@ -262,7 +339,7 @@
     position: relative;
     width: 100%;
     box-sizing: border-box;
-    padding: 0 16px;
+    padding: 0 1cm;
     margin-top: 10px;
     margin-bottom: 30px;
 }
@@ -278,7 +355,7 @@
 
 .shop-now-btn{
     position: absolute;
-    left: 90px;
+    left: calc(1cm + 40px);
     bottom: 110px;
 
     width: 170px;
@@ -382,6 +459,44 @@
 .featured-prev-btn:hover {
     background: #01283c;
     transform: scale(1.12);
+}
+
+.featured-next-btn:active,
+.featured-prev-btn:active {
+    transform: scale(0.92);
+}
+
+/* Smooth Slide Animations for Product Carousel */
+@keyframes slideFromRight {
+    0% {
+        opacity: 0.15;
+        transform: translateX(38px);
+    }
+    100% {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+@keyframes slideFromLeft {
+    0% {
+        opacity: 0.15;
+        transform: translateX(-38px);
+    }
+    100% {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+.featured-section .perfumes.slide-from-right {
+    animation: slideFromRight 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    will-change: transform, opacity;
+}
+
+.featured-section .perfumes.slide-from-left {
+    animation: slideFromLeft 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    will-change: transform, opacity;
 }
 
 /* ═══════════════════════════════
@@ -545,6 +660,7 @@
         padding: 12px;
         padding-top: 30px;
     }
+    
 
     .endsection {
         padding: 12px;
