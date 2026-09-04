@@ -22,10 +22,10 @@ function MyOrders() {
   // cancellingItem: "orderId-itemIndex" string while a cancel request is in-flight
   const [cancellingItem, setCancellingItem] = useState(null);
 
-  const user = getUser();
-
   useEffect(() => {
-    if (!user) {
+    window.scrollTo(0, 0);
+    const currentUser = getUser();
+    if (!currentUser || !currentUser._id) {
       toast.error("Please login first!");
       navigate("/login");
       return;
@@ -68,8 +68,11 @@ function MyOrders() {
    * - Otherwise falls back to the admin-set order.status.
    */
   const getOrderDisplayStatus = (order) => {
-    const itemStatuses = order.items.map((item) => item.itemStatus || "Pending");
-    const allCancelled = itemStatuses.every((s) => s === "Cancelled");
+    if (!order || !Array.isArray(order.items) || order.items.length === 0) {
+      return order?.status || "Pending";
+    }
+    const itemStatuses = order.items.map((item) => item?.itemStatus || "Pending");
+    const allCancelled = itemStatuses.length > 0 && itemStatuses.every((s) => s === "Cancelled");
     if (allCancelled) return "Cancelled";
     // If the admin hasn't changed the overall status to something misleading,
     // keep it. But if it says Cancelled while not all items are cancelled, show
@@ -81,7 +84,7 @@ function MyOrders() {
         if (itemStatuses.includes(p)) return p;
       }
     }
-    return order.status;
+    return order.status || "Pending";
   };
 
   // ── Per-item cancel ───────────────────────────────────────────
@@ -91,13 +94,20 @@ function MyOrders() {
     );
     if (!confirmed) return;
 
+    const currentUser = getUser();
+    if (!currentUser || !currentUser._id) {
+      toast.error("Please login first!");
+      navigate("/login");
+      return;
+    }
+
     const key = `${orderId}-${itemIndex}`;
     setCancellingItem(key);
     try {
-     const res = await axios.patch(
-  `${BASE_URL}/api/orders/${orderId}/items/${itemIndex}/cancel`,
-  { userId: user._id }
-);
+      const res = await axios.patch(
+        `${BASE_URL}/api/orders/${orderId}/items/${itemIndex}/cancel`,
+        { userId: currentUser._id }
+      );
       // Replace the updated order in state
       setOrders((prev) =>
         prev.map((o) => (o._id === orderId ? res.data.order : o))
@@ -117,12 +127,18 @@ function MyOrders() {
       toast.error("Please select a return reason.");
       return;
     }
+    const currentUser = getUser();
+    if (!currentUser || !currentUser._id) {
+      toast.error("Please login first!");
+      navigate("/login");
+      return;
+    }
     setReturning(true);
     try {
       const res = await axios.patch(
-  `${BASE_URL}/api/orders/${returnForm.orderId}/items/${returnForm.itemIndex}/return`,
-  { userId: user._id, reason: returnForm.reason }
-);
+        `${BASE_URL}/api/orders/${returnForm.orderId}/items/${returnForm.itemIndex}/return`,
+        { userId: currentUser._id, reason: returnForm.reason }
+      );
       setOrders((prev) =>
         prev.map((o) => (o._id === returnForm.orderId ? res.data.order : o))
       );
@@ -163,22 +179,32 @@ function MyOrders() {
               </button>
             </div>
           ) : (
-            orders.map((order) => (
-              <div className="order-card" key={order._id}>
+            orders.map((order) => {
+              if (!order) return null;
+              const items = Array.isArray(order.items) ? order.items : [];
+              const orderDisplayId = order._id ? order._id.slice(-8).toUpperCase() : "N/A";
+              const orderDateStr = order.createdAt
+                ? new Date(order.createdAt).toLocaleDateString("en-IN", {
+                    day: "numeric",
+                    month: "short",
+                    year: "numeric",
+                  })
+                : "";
+
+              return (
+              <div className="order-card" key={order._id || Math.random()}>
 
               {/* ── Order header ── */}
                 <div className="order-card-header">
                   <div>
                     <span className="order-id">
-                      Order #{order._id.slice(-8).toUpperCase()}
+                      Order #{orderDisplayId}
                     </span>
-                    <span className="order-date">
-                      {new Date(order.createdAt).toLocaleDateString("en-IN", {
-                        day: "numeric",
-                        month: "short",
-                        year: "numeric",
-                      })}
-                    </span>
+                    {orderDateStr && (
+                      <span className="order-date">
+                        {orderDateStr}
+                      </span>
+                    )}
                   </div>
                   {/* Show overall derived status — no Cancel button at order level */}
                   <span
@@ -191,27 +217,28 @@ function MyOrders() {
 
                 {/* ── Items list ── */}
                 <div className="order-items">
-                  {order.items.map((item, i) => {
+                  {items.map((item, i) => {
+                    if (!item) return null;
                     const iStatus = item.itemStatus || "Pending";
                     const isReturnFormOpen =
                       returnForm?.orderId === order._id &&
                       returnForm?.itemIndex === i;
 
                     return (
-                      <div key={i}>
+                      <div key={item._id || i}>
                         <div className="order-item-row">
                           {item.image && (
                             <img
                               src={getImageUrl(item.image)}
-                              alt={item.title}
+                              alt={item.title || "Product"}
                               className="order-item-img"
                             />
                           )}
 
                           <div className="order-item-info" style={{ flex: 1 }}>
-                            <p className="order-item-title">{item.title}</p>
+                            <p className="order-item-title">{item.title || "Product"}</p>
                             <p className="order-item-meta">
-                              Qty: {item.quantity}&nbsp;|&nbsp;&#8377;{item.salePrice}
+                              Qty: {item.quantity || 1}&nbsp;|&nbsp;&#8377;{item.salePrice || 0}
                             </p>
                           </div>
 
@@ -331,7 +358,8 @@ function MyOrders() {
                 </div>
 
               </div>
-            ))
+              );
+            })
           )}
         </div>
       </div>

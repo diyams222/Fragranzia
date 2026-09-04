@@ -154,12 +154,12 @@ const handleToggleWishlist = async (e, productId) => {
         
 <Navbar/>
 
-        <div className="logsign-btn"> 
+        {/* <div className="logsign-btn"> 
         <button><Link to="/signup" className={Location.pathname === "/Signup" ? "active" : ""}>SignUp</Link></button>
         <br />
         <button><Link to="/login" className={Location.pathname === "/Login" ? "active" : ""}>Login</Link></button>
-        </div>
-                
+        </div> */}
+        <br />                
 
         <div className="hero-slider">
 

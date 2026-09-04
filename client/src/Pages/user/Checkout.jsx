@@ -433,6 +433,7 @@ function Checkout() {
     <div className="success-buttons">
 
       <button
+        type="button"
         className="home-btn"
         onClick={() => {
           setShowSuccess(false);
@@ -443,6 +444,7 @@ function Checkout() {
       </button>
 
       <button
+        type="button"
         className="track-btn"
         onClick={() => {
           setShowSuccess(false);

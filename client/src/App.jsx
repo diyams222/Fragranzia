@@ -98,7 +98,7 @@ function App() {
             <Route path="/address" element={<Address />} />
 
             <Route path="/myorders" element={<MyOrders />} />
-
+            <Route path="/orders" element={<Navigate to="/myorders" replace />} />
 
             <Route path="/checkout" element={<Checkout />} />
 
