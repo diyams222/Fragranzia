@@ -19,10 +19,12 @@
     width: 50%;
     padding: 15px;
 }
-.right image{
-    width: 90%;
-    height: 90%;
+.right img{
+    width: 100%;
+    max-width: 420px;
+    height: auto;
     object-fit: cover;
+    filter: drop-shadow(0 15px 30px rgba(0, 0, 0, 0.32));
 }
 .text2{
     position: absolute;

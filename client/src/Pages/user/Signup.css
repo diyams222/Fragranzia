@@ -10,17 +10,21 @@
 .first-sec{
   display: flex;
   width: 100%;
-  max-width: 1100px;
+  max-width: 900px;
   border-radius: 2px;
 }
 .left{
   position: relative;
   width: 50%;
   padding: 15px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 .left img{
   width: 100%;
-  height: 100%;
+  max-width: 420px;
+  height: 420px;
   object-fit: cover;
   border-top-right-radius: 120px;
   border-bottom-left-radius: 120px;
